@@ -1,3 +1,5 @@
+@layer base, clerk, tailwind, components, utilities;
+
 @import "tailwindcss";
 @import "tw-animate-css";
 

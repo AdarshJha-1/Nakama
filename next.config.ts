@@ -6,6 +6,9 @@ const nextConfig: NextConfig = {
     staleTimes: {
       dynamic: 30
     }
+  },
+  images: {
+    domains: ["img.clerk.com"],
   }
 };
 
