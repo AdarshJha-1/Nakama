@@ -1,13 +1,16 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
+/* Define a custom dark variant for targeting .dark class */
 @custom-variant dark (&:is(.dark *));
 
+/* Theme variables exposed inline for utility classes or components */
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -16,134 +19,163 @@
   --color-sidebar-primary: var(--sidebar-primary);
   --color-sidebar-foreground: var(--sidebar-foreground);
   --color-sidebar: var(--sidebar);
+
   --color-chart-5: var(--chart-5);
   --color-chart-4: var(--chart-4);
   --color-chart-3: var(--chart-3);
   --color-chart-2: var(--chart-2);
   --color-chart-1: var(--chart-1);
+
   --color-ring: var(--ring);
   --color-input: var(--input);
   --color-border: var(--border);
+
   --color-destructive: var(--destructive);
   --color-accent-foreground: var(--accent-foreground);
   --color-accent: var(--accent);
+
   --color-muted-foreground: var(--muted-foreground);
   --color-muted: var(--muted);
+
   --color-secondary-foreground: var(--secondary-foreground);
   --color-secondary: var(--secondary);
+
   --color-primary-foreground: var(--primary-foreground);
   --color-primary: var(--primary);
+
   --color-popover-foreground: var(--popover-foreground);
   --color-popover: var(--popover);
+
   --color-card-foreground: var(--card-foreground);
   --color-card: var(--card);
+
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
 }
 
+/* Root variables for Catppuccin Latte (light theme) */
 :root {
   --radius: 0.65rem;
-  --background: oklch(0.95 0.01 82);
-  /* Gruvbox Background Light (#ebdbb2) */
-  --foreground: oklch(0.22 0.03 82);
-  /* Gruvbox Foreground (#282828) */
-  --card: oklch(0.99 0.01 82);
-  /* Gruvbox Background */
-  --card-foreground: oklch(0.22 0.03 82);
-  /* Gruvbox Foreground (#282828) */
-  --primary: oklch(0.62 0.17 29.5);
-  /* Gruvbox Yellow (#d79921) */
-  --primary-foreground: oklch(0.95 0.01 82);
-  /* Background Light */
-  --secondary: oklch(0.51 0.13 120.1);
-  /* Gruvbox Green (#98971a) */
-  --secondary-foreground: oklch(0.95 0.01 82);
-  --muted: oklch(0.52 0.06 81.5);
-  /* Gruvbox Gray (#a89984) */
-  --muted-foreground: oklch(0.22 0.03 82);
-  --accent: oklch(0.62 0.17 340);
-  /* Gruvbox Purple (#b16286) */
-  --accent-foreground: oklch(0.95 0.01 82);
-  --destructive: oklch(0.47 0.19 29.7);
-  /* Gruvbox Red (#cc241d) */
-  --border: oklch(0.74 0.06 81.5);
-  /* Gruvbox Gray (#a89984) */
-  --input: oklch(0.95 0.01 82);
-  --ring: oklch(0.62 0.17 29.5);
-  --chart-1: oklch(0.77 0.19 70.08);
-  /* Orange (#d65d0e) */
-  --chart-2: oklch(0.58 0.10 195);
-  /* Aqua/Cyan (#689d6a) */
-  --chart-3: oklch(0.52 0.13 226);
-  /* Blue (#458588) */
-  --chart-4: oklch(0.77 0.16 252);
-  /* Purple (#b16286) */
-  --chart-5: oklch(0.60 0.19 38);
-  /* Yellow (#d79921 again as highlight) */
-  --sidebar: oklch(0.95 0.01 82);
-  --sidebar-foreground: oklch(0.22 0.03 82);
-  --sidebar-primary: oklch(0.62 0.17 29.5);
-  --sidebar-primary-foreground: oklch(0.95 0.01 82);
-  --sidebar-accent: oklch(0.60 0.19 38);
-  --sidebar-accent-foreground: oklch(0.95 0.01 82);
-  --sidebar-border: oklch(0.74 0.06 81.5);
-  --sidebar-ring: oklch(0.62 0.17 29.5);
+
+  --background: #faf8ed;
+  /* Latte base */
+  --foreground: #4c4f69;
+  /* Latte text */
+  --card: #eff1f5;
+  --card-foreground: #4c4f69;
+
+  --primary: #d20f39;
+  /* Catppuccin red */
+  --primary-foreground: #ffffff;
+
+  --secondary: #40a02b;
+  /* Catppuccin green */
+  --secondary-foreground: #ffffff;
+
+  --muted: #dce0e8;
+  /* Catppuccin surface0 */
+  --muted-foreground: #6c6f85;
+
+  --accent: #1e66f5;
+  /* Catppuccin blue */
+  --accent-foreground: #ffffff;
+
+  --destructive: #fe640b;
+  /* Catppuccin peach (danger) */
+
+  --border: #ccd0da;
+  /* surface2 */
+  --input: #ccd0da;
+  --ring: #7287fd;
+  /* Catppuccin lavender */
+
+  --chart-1: #209fb5;
+  /* teal */
+  --chart-2: #8839ef;
+  /* mauve */
+  --chart-3: #df8e1d;
+  /* yellow */
+  --chart-4: #ea76cb;
+  /* pink */
+  --chart-5: #907aa9;
+  /* lavender */
+
+  --sidebar: #e6e9ef;
+  --sidebar-foreground: #4c4f69;
+  --sidebar-primary: #7287fd;
+  /* Catppuccin lavender */
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #fe640b;
+  /* peach */
+  --sidebar-accent-foreground: #ffffff;
+  --sidebar-border: #ccd0da;
+  --sidebar-ring: #7287fd;
 }
 
+/* Dark mode (Catppuccin Mocha) overrides */
 .dark {
-  --background: oklch(0.22 0.03 82);
-  /* Gruvbox Background Dark (#282828) */
-  --foreground: oklch(0.95 0.01 82);
-  /* Gruvbox Foreground (#ebdbb2) */
-  --card: oklch(0.26 0.025 82);
-  /* Medium background (#3c3836) */
-  --card-foreground: oklch(0.95 0.01 82);
-  --primary: oklch(0.77 0.19 70.08);
-  /* Orange (#d65d0e) */
-  --primary-foreground: oklch(0.22 0.03 82);
-  --secondary: oklch(0.51 0.13 120.1);
-  /* Green (#98971a) */
-  --secondary-foreground: oklch(0.95 0.01 82);
-  --muted: oklch(0.32 0.02 81.5);
-  /* Dimmed gray (#3c3836) */
-  --muted-foreground: oklch(0.74 0.06 81.5);
-  --accent: oklch(0.62 0.17 340);
-  /* Purple (#b16286) */
-  --accent-foreground: oklch(0.95 0.01 82);
-  --destructive: oklch(0.47 0.19 29.7);
-  /* Red (#cc241d) */
-  --border: oklch(0.26 0.025 82);
-  --input: oklch(0.26 0.025 82);
-  --ring: oklch(0.77 0.19 70.08);
-  --chart-1: oklch(0.51 0.13 120.1);
-  /* Green */
-  --chart-2: oklch(0.62 0.17 29.5);
-  /* Yellow */
-  --chart-3: oklch(0.62 0.17 340);
-  /* Purple */
-  --chart-4: oklch(0.47 0.19 29.7);
-  /* Red */
-  --chart-5: oklch(0.52 0.13 226);
-  /* Blue */
-  --sidebar: oklch(0.26 0.025 82);
-  --sidebar-foreground: oklch(0.95 0.01 82);
-  --sidebar-primary: oklch(0.77 0.19 70.08);
-  --sidebar-primary-foreground: oklch(0.22 0.03 82);
-  --sidebar-accent: oklch(0.62 0.17 340);
-  --sidebar-accent-foreground: oklch(0.95 0.01 82);
-  --sidebar-border: oklch(0.32 0.02 81.5);
-  --sidebar-ring: oklch(0.77 0.19 70.08);
+  --background: #1a1a20;
+  /* Mocha base */
+  --foreground: #cdd6f4;
+  /* Mocha text */
+  --card: #181825;
+  --card-foreground: #cdd6f4;
+
+  --primary: #f5e0dc;
+  /* Rosewater */
+  --primary-foreground: #1e1e2e;
+
+  --secondary: #a6e3a1;
+  /* Catppuccin green */
+  --secondary-foreground: #1e1e2e;
+
+  --muted: #313244;
+  /* surface0 */
+  --muted-foreground: #a6adc8;
+
+  --accent: #89b4fa;
+  /* Catppuccin blue */
+  --accent-foreground: #1e1e2e;
+
+  --destructive: #f38ba8;
+  /* red (danger) */
+
+  --border: #45475a;
+  /* overlay1 */
+  --input: #45475a;
+  --ring: #cba6f7;
+  /* Catppuccin mauve */
+
+  --chart-1: #94e2d5;
+  /* teal */
+  --chart-2: #f5c2e7;
+  /* pink */
+  --chart-3: #eba0ac;
+  /* red */
+  --chart-4: #a6e3a1;
+  /* green */
+  --chart-5: #b4befe;
+  /* lavender */
+
+  --sidebar: #181825;
+  --sidebar-foreground: #cdd6f4;
+  --sidebar-primary: #cba6f7;
+  --sidebar-primary-foreground: #1e1e2e;
+  --sidebar-accent: #f5e0dc;
+  --sidebar-accent-foreground: #1e1e2e;
+  --sidebar-border: #45475a;
+  --sidebar-ring: #cba6f7;
 }
 
-
+/* Apply defaults using Tailwind’s @apply */
 @layer base {
   * {
     @apply border-border outline-ring/50;
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-sans;
   }
 }

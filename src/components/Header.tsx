@@ -8,11 +8,11 @@ import { ModeToggle } from './ThemeToggleButton'
 
 export default function Header() {
     return (
-        <header className="border-b bg-background">
+        <header className="border-b bg-background sticky top-0">
             <div className="container mx-auto flex items-center justify-between px-4 h-16">
                 <Link href="/" className="text-xl font-black flex items-center gap-1">
                     <Image src={logoGirl} alt='logo' width={70} height={70} />
-                    <span className="font-extrabold text-2xl text-chart-5 dark:text-chart-2 tracking-tighter ">
+                    <span className="font-extrabold text-2xl text-primary dark:text-chart-2 tracking-tighter ">
                         Nakama
                     </span>
                 </Link>
