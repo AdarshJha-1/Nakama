@@ -4,7 +4,6 @@ import "./globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import Header from "@/components/Header";
-import { auth } from "@clerk/nextjs/server";
 import { Toaster } from "@/components/ui/sonner"
 
 const geistSans = Geist({
@@ -31,7 +30,6 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
 
-  const { isAuthenticated } = await auth()
   return (
     <ClerkProvider appearance={{ cssLayerName: "tailwind" }}>
       <html lang="en" suppressHydrationWarning>
@@ -39,7 +37,7 @@ export default async function RootLayout({
           className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         >
           <ThemeProvider attribute={"class"} defaultTheme="system" enableSystem disableTransitionOnChange>
-            {!isAuthenticated && <Header />}
+            <Header />
             {children}
             <Toaster />
           </ThemeProvider>
