@@ -23,7 +23,7 @@ export default function UserProfile({ user }: UserProfileProps) {
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild className="cursor-pointer">
-                {user?.image && <Image className="rounded-full" src={user.image as string} width={60} height={60} alt="avatar" />
+                {user?.image && <Image className="rounded-full" src={user.image as string} width={50} height={50} alt="avatar" />
                 }
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-56" align="start">
@@ -44,5 +44,3 @@ export default function UserProfile({ user }: UserProfileProps) {
         </DropdownMenu>
     )
 }
-
-//src={"https://i.pinimg.com/736x/3e/cd/d0/3ecdd093c3aba2cf817c65d83bdb45cb.jpg"} 

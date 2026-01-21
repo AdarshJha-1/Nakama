@@ -1,5 +1,5 @@
 import { relations } from "drizzle-orm";
-import { pgTable, text, timestamp, boolean, index } from "drizzle-orm/pg-core";
+import { pgTable, text, timestamp, boolean, index, primaryKey, pgEnum } from "drizzle-orm/pg-core";
 
 export const user = pgTable("user", {
     id: text("id").primaryKey(),
@@ -94,9 +94,76 @@ export const accountRelations = relations(account, ({ one }) => ({
 }));
 
 
+export const post = pgTable("post", {
+    id: text("id").primaryKey(),
+    content: text("content").notNull(),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at")
+        .$onUpdate(() => /* @__PURE__ */ new Date())
+        .notNull(),
+    userId: text("user_id").notNull().references(() => user.id, { onDelete: "cascade" }),
+})
+
+export const likes = pgTable("likes",
+    {
+        userId: text("user_id").notNull().references(() => user.id, { onDelete: "cascade" }),
+        postId: text("post_id").notNull().references(() => post.id, { onDelete: "cascade" }),
+        createdAt: timestamp("created_at").defaultNow().notNull(),
+    },
+    (table) => ({
+        pk: primaryKey({ columns: [table.userId, table.postId] })
+    })
+)
+export const comments = pgTable("comments",
+    {
+        id: text("id").primaryKey(),
+        content: text("content").notNull(),
+        isEdited: boolean("is_edited").default(false).notNull(),
+        createdAt: timestamp("created_at").defaultNow().notNull(),
+        updatedAt: timestamp("updated_at")
+            .$onUpdate(() => /* @__PURE__ */ new Date())
+            .notNull(),
+        userId: text("user_id").notNull().references(() => user.id, { onDelete: "cascade" }),
+        postId: text("post_id").notNull().references(() => post.id, { onDelete: "cascade" }),
+    }
+)
+export const bookmarks = pgTable("bookmarks",
+    {
+        userId: text("user_id").notNull().references(() => user.id, { onDelete: "cascade" }),
+        postId: text("post_id").notNull().references(() => post.id, { onDelete: "cascade" }),
+        createdAt: timestamp("created_at").defaultNow().notNull(),
+    },
+    (table) => ({
+        pk: primaryKey({ columns: [table.userId, table.postId] })
+    })
+)
+
+
+export const MediaTypeEnum = pgEnum("media_type",
+    [
+        "IMAGE",
+        "VIDEO",
+    ]
+)
+
+export const media = pgTable("post_media",
+    {
+        id: text("id").primaryKey(),
+        postId: text("post_id").references(() => post.id, { onDelete: "cascade" }),
+        type: MediaTypeEnum("type").notNull(),
+        url: text("url").notNull(),
+        createdAt: timestamp("created_at").defaultNow().notNull(),
+    }
+)
+
 export const schema = {
     user,
     session,
     account,
-    verification
-}
+    verification,
+    post,
+    likes,
+    comments,
+    bookmarks,
+    media
+} as const;

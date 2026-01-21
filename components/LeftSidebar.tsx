@@ -3,9 +3,9 @@ import { Button } from "./ui/button";
 import { Bell, Book, Home, Search } from "lucide-react";
 import { ReactNode } from "react";
 
-export default function LeftSidebar() {
+export default function LeftSidebar({ className }: { className?: string }) {
     return (
-        <header className="flex flex-col gap-2 border shadow min-w-56 justify-center px-3 h-52 rounded-2xl">
+        <header className={`flex flex-col gap-2 bg-card border shadow w-fit md:w-44 lg:w-52 justify-center items-start px-3 h-52 rounded-2xl transition ease-in ${className}`}>
             <SidebarButton buttonName="Home" buttonIcon={<Home />} buttonPath="home" />
             <SidebarButton buttonName="Search" buttonIcon={<Search />} buttonPath="search" />
             <SidebarButton buttonName="Notification" buttonIcon={<Bell />} buttonPath="notification" />
@@ -22,10 +22,10 @@ interface SidebarButtonProps {
 }
 
 function SidebarButton({ buttonPath, buttonName, buttonIcon, className = "" }: SidebarButtonProps) {
-    return <Button className={`h-10 ${className}`} asChild>
+    return <Button className={`w-fit md:w-full h-10 ${className}`} variant={"ghost"} asChild>
         <Link href={buttonPath?.startsWith("/") ? buttonPath : `/${buttonPath}`}>
             {buttonIcon}
-            <span>{buttonName}</span>
+            <span className="hidden md:block">{buttonName}</span>
         </Link>
     </Button>
 }
