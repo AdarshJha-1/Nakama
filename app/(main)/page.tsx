@@ -1,4 +1,4 @@
-import AllPosts from "@/components/posts/AllPosts";
+import PostPage from "@/components/posts/AllPosts";
 import Tiptap from "@/components/posts/editor/Tiptap";
 import { getServerSession } from "@/lib/getServerSession";
 import { Plus } from "lucide-react";
@@ -11,7 +11,7 @@ export default async function Home() {
   if (!user) redirect("/auth")
 
   return (
-    <main className="w-full flex relative">
+    <main className="w-full flex relative ">
       <div className="w-full flex flex-col">
         <div className="hidden sm:block sm:mb-5">
           <Tiptap />
@@ -19,7 +19,9 @@ export default async function Home() {
         <div className="rounded-full fixed right-10 bottom-20 sm:hidden flex justify-center items-center bg-blue-400 w-12 h-12  hover:bg-accent">
           <Plus size={32} />
         </div>
-        <AllPosts />
+        <div className="">
+          <PostPage />
+        </div>
       </div>
     </main>
   )

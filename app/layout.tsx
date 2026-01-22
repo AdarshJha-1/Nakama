@@ -4,6 +4,7 @@ import "./globals.css";
 
 import { ThemeProvider } from "@/components/theme-provider"
 import { Toaster } from "@/components/ui/sonner";
+import ReactQueryProvider from "./ReactQueryProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -50,14 +51,16 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <ThemeProvider
-          attribute={"class"}
-          defaultTheme={"system"}
-          enableSystem
-          disableTransitionOnChange
-        >
-          {children}
-        </ThemeProvider>
+        <ReactQueryProvider>
+          <ThemeProvider
+            attribute={"class"}
+            defaultTheme={"system"}
+            enableSystem
+            disableTransitionOnChange
+          >
+            {children}
+          </ThemeProvider>
+        </ReactQueryProvider>
         <Toaster />
       </body>
     </html>

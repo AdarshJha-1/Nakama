@@ -11,8 +11,6 @@ export const createPostAction = async ({ content }: { content: string }) => {
     if (!session) throw new Error("Unauthorized")
     const user = session?.user;
 
-    const newPost = (await db.insert(post).values({ content, userId: user.id, id: nanoid() }))
-    console.log(newPost);
-
-    return newPost
+    await db.insert(post).values({ content, userId: user.id, id: nanoid() })
+    return;
 }

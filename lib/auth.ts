@@ -1,4 +1,4 @@
-import { betterAuth } from "better-auth";
+import { betterAuth, toLowerCase } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { db } from "@/db/drizzle";
 import { schema } from "@/db/schema";
@@ -21,10 +21,29 @@ export const auth = betterAuth({
                 type: "string",
                 input: false,
                 defaultValue: "user"
+            },
+            username: {
+                type: "string",
+                input: false,
+                defaultValue: Date.now().toLocaleString()
             }
         }
     },
     plugins: [nextCookies()],
+    databaseHooks: {
+        user: {
+            create: {
+                before: async (user) => {
+                    return {
+                        data: {
+                            ...user,
+                            username: `${user.name.toLowerCase()}-${Date.now()}`
+                        }
+                    }
+                }
+            }
+        }
+    }
 
 });
 

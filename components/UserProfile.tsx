@@ -1,5 +1,3 @@
-import { User } from "@/lib/auth"
-
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -13,10 +11,11 @@ import {
 import Image from "next/image"
 import { Settings, UserIcon, } from "lucide-react";
 import SignOutButton from "./SignOutButton";
+import { UserType } from "@/types/User";
 
 
 interface UserProfileProps {
-    user: User;
+    user: UserType;
 }
 
 export default function UserProfile({ user }: UserProfileProps) {
@@ -27,7 +26,7 @@ export default function UserProfile({ user }: UserProfileProps) {
                 }
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-56" align="start">
-                <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                <DropdownMenuLabel>{user.name}</DropdownMenuLabel>
                 <DropdownMenuGroup>
                     <DropdownMenuItem className="flex items-center justify-between">
                         Profile

@@ -40,8 +40,8 @@ const Tiptap = () => {
             return;
         }
         console.log(content);
-        const post = await createPostAction({ content })
-        console.log(post);
+        await createPostAction({ content })
+
 
         editor.commands.clearContent();
     }
