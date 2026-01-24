@@ -1,4 +1,4 @@
-import PostPage from "@/components/posts/AllPosts";
+import PostPage from "@/components/posts/PostPage";
 import Tiptap from "@/components/posts/editor/Tiptap";
 import { getServerSession } from "@/lib/getServerSession";
 import { Plus } from "lucide-react";

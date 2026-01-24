@@ -157,6 +157,29 @@ export const media = pgTable("post_media",
     }
 )
 
+export const postRelations = relations(post, ({ one, many }) => ({
+    author: one(user, { fields: [post.userId], references: [user.id] }),
+    likes: many(likes),
+    comments: many(comments),
+    bookmarks: many(bookmarks),
+}));
+
+export const likeRelations = relations(likes, ({ one }) => ({
+    post: one(post, { fields: [likes.postId], references: [post.id] }),
+}));
+
+export const commentRelations = relations(comments, ({ one }) => ({
+    post: one(post, { fields: [comments.postId], references: [post.id] }),
+    author: one(user, {
+        fields: [comments.userId],
+        references: [user.id],
+    }),
+}));
+
+export const bookmarkRelations = relations(bookmarks, ({ one }) => ({
+    post: one(post, { fields: [bookmarks.postId], references: [post.id] }),
+}));
+
 export const schema = {
     user,
     session,

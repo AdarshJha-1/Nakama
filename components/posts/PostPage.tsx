@@ -16,7 +16,7 @@ export default function PostPage() {
         <div className="flex flex-col gap-5">
             <div className="w-full ">
                 <Tabs defaultValue="for-you" className="w-full">
-                    <TabsList className="w-full sticky top-19 bg-card">
+                    <TabsList className="w-full bg-card">
                         <TabsTrigger value="for-you">For You</TabsTrigger>
                         <TabsTrigger value="following">Following</TabsTrigger>
                     </TabsList>
@@ -28,8 +28,6 @@ export default function PostPage() {
                     </TabsContent>
                 </Tabs>
             </div>
-
-
         </div>
     )
 }

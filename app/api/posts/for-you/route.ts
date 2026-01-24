@@ -1,7 +1,7 @@
 import { db } from "@/db/drizzle";
-import { post, user } from "@/db/schema";
+import { bookmarks, comments, likes, post, user } from "@/db/schema";
 import { getServerSession } from "@/lib/getServerSession";
-import { desc, eq } from "drizzle-orm";
+import { desc, eq, lt, sql, } from "drizzle-orm";
 import { NextRequest } from "next/server";
 
 export async function GET(req: NextRequest) {
@@ -13,18 +13,57 @@ export async function GET(req: NextRequest) {
         }, { status: 401 })
     }
 
-    const posts = await db.select({
-        id: post.id,
-        content: post.content,
-        createdAt: post.createdAt,
+    const pageSize = 10;
 
-        user: {
-            id: user.id,
-            name: user.name,
-            image: user.image,
-            username: user.username
-        }
-    }).from(post).innerJoin(user, eq(post.userId, user.id)).orderBy(desc(post.createdAt))
+    const cursor = req.nextUrl.searchParams.get("cursor") || undefined
 
-    return Response.json(posts)
+    const rawPosts = await db
+        .select({
+            id: post.id,
+            content: post.content,
+            createdAt: post.createdAt,
+
+            authorId: user.id,
+            authorName: user.name,
+            authorUsername: user.username,
+            authorImage: user.image,
+
+            likeCount: sql<number>`(SELECT COUNT(*) FROM ${likes} WHERE ${likes.postId} = ${post.id})`.as("like_count"),
+            bookmarkCount: sql<number>`(SELECT COUNT(*) FROM ${bookmarks} WHERE ${bookmarks.postId} = ${post.id})`.as("bookmark_count"),
+            commentCount: sql<number>`(SELECT COUNT(*) FROM ${comments} WHERE ${comments.postId} = ${post.id})`.as("comment_count"),
+        })
+        .from(post).innerJoin(user, eq(user.id, post.userId))
+        .where(cursor ? lt(post.createdAt, new Date(cursor)) : undefined)
+        .limit(pageSize + 1)
+        .orderBy(desc(post.createdAt))
+
+
+
+    const hasMore = rawPosts.length > pageSize;
+    const postsToReturn = hasMore ? rawPosts.slice(0, pageSize) : rawPosts;
+
+    const nextCursor =
+        hasMore && postsToReturn.length > 0
+            ? postsToReturn[postsToReturn.length - 1].createdAt.toISOString()
+            : null;
+
+    const formattedPosts = postsToReturn.map(p => ({
+        id: p.id,
+        content: p.content,
+        createdAt: p.createdAt,
+        author: {
+            id: p.authorId,
+            name: p.authorName,
+            username: p.authorUsername,
+            image: p.authorImage,
+        },
+        likeCount: Number(p.likeCount) ?? 0,
+        bookmarkCount: Number(p.bookmarkCount) ?? 0,
+        commentCount: Number(p.commentCount) ?? 0,
+    }));
+    return Response.json({
+        success: true,
+        posts: formattedPosts,
+        nextCursor,
+    }, { status: 200 })
 }
