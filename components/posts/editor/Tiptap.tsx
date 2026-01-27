@@ -9,9 +9,13 @@ import "./styles.css"
 import Image from 'next/image'
 import { useState } from 'react'
 import { createPostAction } from './createPostAction'
+import { useSubmitPostMutation } from './PostMutation'
 
 
 const Tiptap = () => {
+
+    const mutation = useSubmitPostMutation()
+
     const [isDisable, setIsDisable] = useState(true);
     const editor = useEditor({
         extensions: [
@@ -31,7 +35,7 @@ const Tiptap = () => {
             setIsDisable(!editor.getText().trim());
         },
     })
-    async function onSubmit() {
+    function onSubmit() {
         if (!editor) {
             return;
         }
@@ -39,11 +43,12 @@ const Tiptap = () => {
         if (!content) {
             return;
         }
-        console.log(content);
-        await createPostAction({ content })
+        mutation.mutate(content, {
+            onSuccess: () => {
+                editor.commands.clearContent();
+            }
+        })
 
-
-        editor.commands.clearContent();
     }
 
     const { user } = useSession();
@@ -57,7 +62,7 @@ const Tiptap = () => {
 
         </div>
         <div className="flex justify-end">
-            <Button className='min-w-20 cursor-pointer' variant={"outline"} onClick={onSubmit} disabled={isDisable}>Post</Button>
+            <Button className='min-w-20 cursor-pointer' variant={"outline"} onClick={onSubmit} disabled={mutation.isPending}>Post</Button>
         </div>
     </div >
 }

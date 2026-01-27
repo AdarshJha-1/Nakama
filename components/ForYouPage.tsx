@@ -5,7 +5,7 @@ import { Loader2 } from "lucide-react";
 import PostCard from "./posts/PostCard";
 import { PostWithUser } from "@/types/Post";
 import InfiniteLoading from "./InfiniteLoading";
-import PostCardSkeleton from "./PostCardSkeleton";
+import PostCardSkeleton from "./posts/PostCardSkeleton";
 
 export default function ForYouPage() {
 
