@@ -78,6 +78,9 @@ export const verification = pgTable(
 export const userRelations = relations(user, ({ many }) => ({
     sessions: many(session),
     accounts: many(account),
+
+    followers: many(follow, { relationName: "followedBy" }),
+    following: many(follow, { relationName: "following" }),
 }));
 
 export const sessionRelations = relations(session, ({ one }) => ({
@@ -115,6 +118,7 @@ export const likes = pgTable("likes",
         pk: primaryKey({ columns: [table.userId, table.postId] })
     })
 )
+
 export const comments = pgTable("comments",
     {
         id: text("id").primaryKey(),
@@ -157,6 +161,18 @@ export const media = pgTable("post_media",
     }
 )
 
+export const follow = pgTable("follow",
+    {
+        followerId: text("follower_id").notNull().references(() => user.id, { onDelete: "cascade" }),
+        followingId: text("following_id").notNull().references(() => user.id, { onDelete: "cascade" }),
+        createdAt: timestamp("created_at").defaultNow().notNull(),
+    },
+    (table) => ({
+        pk: primaryKey({ columns: [table.followerId, table.followingId] }),
+        followingIdx: index("follow_following_id_idx").on(table.followingId),
+    })
+)
+
 export const postRelations = relations(post, ({ one, many }) => ({
     author: one(user, { fields: [post.userId], references: [user.id] }),
     likes: many(likes),
@@ -179,6 +195,21 @@ export const commentRelations = relations(comments, ({ one }) => ({
 export const bookmarkRelations = relations(bookmarks, ({ one }) => ({
     post: one(post, { fields: [bookmarks.postId], references: [post.id] }),
 }));
+
+
+export const followRelations = relations(follow, ({ one }) => ({
+    follower: one(user, {
+        fields: [follow.followerId],
+        references: [user.id],
+        relationName: "followedBy",
+    }),
+    following: one(user, {
+        fields: [follow.followingId],
+        references: [user.id],
+        relationName: "following",
+    }),
+}));
+
 
 export const schema = {
     user,

@@ -51,7 +51,7 @@ export default function PostCard({ post }: { post: PostWithUser }) {
                 </div>
                 {/* Here i will have some media attached to the post if any: This is for an example*/}
                 <div className="rounded-2xl  overflow-hidden ">
-                    <div className="relative w-full aspect-square max-w-3/4">
+                    <div className="relative w-full aspect-square max-w-2/4">
                         <Image
                             src="https://i.pinimg.com/736x/d2/13/57/d21357d63963c923fc8c1ed4290f00da.jpg"
                             // src="https://i.pinimg.com/1200x/3f/7a/04/3f7a0468e08dd5e6dba955a2272c8b73.jpg"

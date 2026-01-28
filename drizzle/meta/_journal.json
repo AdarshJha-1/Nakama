@@ -8,6 +8,13 @@
       "when": 1769104207982,
       "tag": "0000_stiff_dragon_man",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1769606598288,
+      "tag": "0001_brave_synch",
+      "breakpoints": true
     }
   ]
 }
