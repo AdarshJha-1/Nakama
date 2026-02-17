@@ -11,7 +11,7 @@ import {
 import Image from "next/image"
 import { Settings, UserIcon, } from "lucide-react";
 import SignOutButton from "./SignOutButton";
-import { UserType } from "@/types/User";
+import { UserType } from "@/lib/types";
 
 
 interface UserProfileProps {

@@ -1,4 +1,4 @@
-import { PostWithUser } from "@/types/Post"
+import { PostWithUser } from "@/lib/types"
 import UserProfile from "../UserProfile"
 import Link from "next/link"
 import { formatDate } from "@/lib/date-format";
@@ -39,7 +39,7 @@ export default function PostCard({ post }: { post: PostWithUser }) {
             </div>
             <div className="w-full flex gap-2 flex-col">
                 <div className="flex items-center justify-start">
-                    <Link href={`/user/${post.author.username}`} className="w-fit flex gap-1 overflow-clip">
+                    <Link href={`/users/${post.author.username}`} className="w-fit flex gap-1 overflow-clip">
                         <p className="hover:underline font-bold">{post.author.name}</p>
                         <p className="text-muted-foreground text-[18px] text-wrap">{`@${post.author.username}`}</p>
                     </Link>
@@ -91,6 +91,7 @@ export default function PostCard({ post }: { post: PostWithUser }) {
                                                 </AlertDialogDescription>
                                             </AlertDialogHeader>
                                             <AlertDialogFooter>
+                                                {/* This button does not close after deletion is done have to fix it, maybe will use another shadcn component */}
                                                 <AlertDialogCancel>Cancel</AlertDialogCancel>
                                                 <AlertDialogAction onClick={handleDeletePost} variant={"destructive"}>Delete</AlertDialogAction>
                                             </AlertDialogFooter>

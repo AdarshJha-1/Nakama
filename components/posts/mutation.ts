@@ -1,7 +1,6 @@
 import { QueryFilters, useMutation, useQueryClient } from "@tanstack/react-query";
 import { deletePostAction } from "./action";
 import { toast } from "sonner";
-import { PostWithUser } from "@/types/Post";
 import { usePathname, useRouter } from "next/navigation";
 
 export function useDeletePostMutation() {

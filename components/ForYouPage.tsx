@@ -3,9 +3,9 @@
 import { useInfiniteQuery } from "@tanstack/react-query"
 import { Loader2 } from "lucide-react";
 import PostCard from "./posts/PostCard";
-import { PostWithUser } from "@/types/Post";
 import InfiniteLoading from "./InfiniteLoading";
 import PostCardSkeleton from "./posts/PostCardSkeleton";
+import { PostWithUser } from "@/lib/types";
 
 export default function ForYouPage() {
 

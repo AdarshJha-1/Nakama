@@ -1,0 +1,112 @@
+import { Button } from '@/components/ui/button'
+import UserProfile from '@/components/UserProfile'
+import { db } from '@/db/drizzle'
+import { follow, post, user } from '@/db/schema'
+import { formatDate } from '@/lib/date-format'
+import { getServerSession } from '@/lib/getServerSession'
+import { eq, sql } from 'drizzle-orm'
+import Image from 'next/image'
+import { notFound, redirect } from 'next/navigation'
+import React, { cache } from 'react'
+
+interface PageProps {
+    params: Promise<{
+        username: string;
+    }>;
+}
+
+const getUser = cache(async (username: string, loggedInUserId: string) => {
+    const [profileUser] = await db.select({
+        id: user.id,
+        name: user.name,
+        username: user.username,
+        image: user.image,
+        createdAt: user.createdAt,
+
+        followerCount: sql<number>`(
+            select count(*)
+            from ${follow}
+            where ${follow.followingId} = ${user.id}
+        )`,
+        postsCount: sql<number>`
+          (
+            select count(*) 
+            from ${post}
+            where ${post.userId} = ${user.id}
+          )
+        `,
+        isFollowing: sql<boolean>`
+          exists (
+            select 1
+            from ${follow}
+            where ${follow.followingId} = ${user.id}
+            and ${follow.followerId} = ${loggedInUserId}
+          )
+        `,
+
+    }).from(user).where(eq(user.username, username)).limit(1)
+
+    if (!profileUser) notFound()
+
+    return profileUser;
+})
+
+export default async function Page({ params }: PageProps) {
+
+    const { username } = await params
+
+    const session = await getServerSession();
+    if (!session) {
+        redirect("/login")
+    }
+
+    const profileUser = await getUser(username, session.user.id)
+
+    console.log("SESSION:", session);
+    console.log("PROFILE:", profileUser);
+
+    const joinedDate = new Date(profileUser.createdAt).toLocaleDateString("en-GB", {
+        day: "2-digit",
+        month: "short",
+        year: "numeric"
+    })
+
+    return (
+        <main className="flex w-full min-w-0 gap-5">
+            <div className="w-full min-w-0 space-y-5">
+                <div className="bg-card rounded-2xl p-5">
+                    {profileUser?.image && <Image className="rounded-full mx-auto" src={profileUser.image as string} width={150} height={150} alt="avatar" />}
+                    <div className="flex justify-between">
+                        <div className="flex flex-col">
+                            <h1 className='text-3xl font-bold'>{profileUser.name}</h1>
+                            <span className='text-muted-foreground font-light text-sm'>@{profileUser.username}</span>
+                        </div>
+                        {
+                            profileUser.id !== session.user.id ? <Button variant={profileUser.isFollowing ? "secondary" : "default"}>Follow</Button> : null
+                        }
+                    </div>
+                    <div className="font-light py-2 text-sm">
+                        <span> Member since {joinedDate}</span>
+                    </div>
+                    <div className="flex gap-2 font-light py-2 text-sm">
+                        <span>Posts: {profileUser.postsCount}</span>
+                        <span>Followers: {profileUser.followerCount}</span>
+                    </div>
+                </div>
+                <div className="rounded-2xl bg-card p-5 shadow-sm">
+                    <h2 className="text-center text-2xl font-bold">
+                        {profileUser.name}&apos;s posts
+                    </h2>
+                </div>
+                <UserPosts userId={profileUser.id} />
+            </div>
+        </main >)
+}
+
+
+function UserPosts(userId: { userId: string }) {
+
+    return (
+        <div>page</div>
+    )
+}
