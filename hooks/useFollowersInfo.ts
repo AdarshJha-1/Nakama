@@ -9,6 +9,8 @@ export default function useFollowersInfo(userId: string, initialState: FollowerI
             if (!res.ok) {
                 throw new Error("failed to fetch posts");
             }
+            console.log(res);
+
             const { data }: { data: FollowerInfo } = await res.json();
             return data;
         },

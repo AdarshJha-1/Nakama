@@ -3,7 +3,7 @@
 import { db } from "@/db/drizzle"
 import { post } from "@/db/schema"
 import { getServerSession } from "@/lib/getServerSession"
-import { PostWithUser } from "@/types/Post"
+import { PostWithUser } from "@/lib/types"
 import { nanoid } from "nanoid"
 
 export const createPostAction = async (content: string): Promise<PostWithUser> => {
@@ -15,11 +15,8 @@ export const createPostAction = async (content: string): Promise<PostWithUser> =
     const res = await db.insert(post)
         .values(
             { content, userId: user.id, id: nanoid() })
-        .returning({ id: post.id, content: post.content, createdAt: post.createdAt, })
-    console.log(res.toString());
-
+        .returning({ id: post.id, content: post.content, createdAt: post.createdAt })
     const newPost = res[0]
-
     return {
         id: newPost.id,
         content: newPost.content,

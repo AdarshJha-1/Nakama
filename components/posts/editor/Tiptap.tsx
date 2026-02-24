@@ -8,14 +8,12 @@ import { Button } from '@/components/ui/button'
 import "./styles.css"
 import Image from 'next/image'
 import { useState } from 'react'
-import { createPostAction } from './createPostAction'
 import { useSubmitPostMutation } from './PostMutation'
 
 
 const Tiptap = () => {
 
     const mutation = useSubmitPostMutation()
-
     const [isDisable, setIsDisable] = useState(true);
     const editor = useEditor({
         extensions: [

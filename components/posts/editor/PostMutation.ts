@@ -14,7 +14,9 @@ export function useSubmitPostMutation() {
 
             queryClient.setQueriesData(
                 queryFilter,
-                (oldData) => {
+                (oldData: any) => {
+                    console.log(oldData?.pages[0]);
+
                     const firstPage = oldData?.pages[0];
 
                     if (firstPage) {

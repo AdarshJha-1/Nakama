@@ -18,13 +18,17 @@ export async function GET(
             }, { status: 401 })
         }
 
+        const decUserId = decodeURIComponent(userId)
         const alreadyFollow = await db.query.follow.findFirst({
             where: and(
                 eq(follow.followerId, session.user.id),
-                eq(follow.followingId, userId)
+                eq(follow.followingId, decUserId)
             )
         })
-        const followersCount = await db.select({ count: sql<number>`count(*)` }).from(follow).where(eq(follow.followingId, userId))
+        const followersCount = await db
+            .select({ count: sql<number>`count(*)` })
+            .from(follow)
+            .where(eq(follow.followingId, decUserId))
 
         const data: FollowerInfo = {
             followers: followersCount[0].count,
@@ -45,12 +49,16 @@ export async function GET(
     }
 }
 
-
 export async function POST(
     req: Request,
-    { params: { userId } }: { params: { userId: string } }
+    { params }: { params: Promise<{ userId: string }> }
 ) {
     try {
+        const { userId } = await params
+        const decUserId = decodeURIComponent(userId)
+
+        console.log("Here::::", decUserId);
+
         const session = await getServerSession();
         if (!session) {
             return Response.json({
@@ -59,7 +67,7 @@ export async function POST(
             }, { status: 401 })
         }
 
-        if (userId == session.user.id) {
+        if (decUserId == session.user.id) {
             return Response.json({
                 success: true,
                 message: "You cannot follow yourself",
@@ -69,7 +77,7 @@ export async function POST(
         await db.insert(follow).values(
             {
                 followerId: session.user.id,
-                followingId: userId
+                followingId: decUserId
             }
         ).onConflictDoNothing();
 
@@ -89,7 +97,7 @@ export async function POST(
 
 export async function DELETE(
     req: Request,
-    { params: { userId } }: { params: { userId: string } }
+    { params }: { params: Promise<{ userId: string }> }
 ) {
     try {
         const session = await getServerSession();
@@ -100,7 +108,11 @@ export async function DELETE(
             }, { status: 401 })
         }
 
-        await db.delete(follow).where(and(eq(follow.followerId, session.user.id), eq(follow.followingId, userId)))
+        const { userId } = await params
+        const decUserId = decodeURIComponent(userId)
+
+
+        await db.delete(follow).where(and(eq(follow.followerId, session.user.id), eq(follow.followingId, decUserId)))
 
         return Response.json({
             success: true,

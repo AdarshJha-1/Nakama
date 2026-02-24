@@ -1,13 +1,15 @@
-import { Button } from '@/components/ui/button'
-import UserProfile from '@/components/UserProfile'
+import FollowButton from '@/components/FollowButton'
+import ShowFollowerCount from '@/components/FollowerCount'
 import { db } from '@/db/drizzle'
 import { follow, post, user } from '@/db/schema'
-import { formatDate } from '@/lib/date-format'
+import useFollowersInfo from '@/hooks/useFollowersInfo'
 import { getServerSession } from '@/lib/getServerSession'
+import { FollowerInfo } from '@/lib/types'
 import { eq, sql } from 'drizzle-orm'
+import { Metadata } from 'next'
 import Image from 'next/image'
 import { notFound, redirect } from 'next/navigation'
-import React, { cache } from 'react'
+import { cache } from 'react'
 
 interface PageProps {
     params: Promise<{
@@ -51,19 +53,34 @@ const getUser = cache(async (username: string, loggedInUserId: string) => {
     return profileUser;
 })
 
-export default async function Page({ params }: PageProps) {
+export async function generateMetadata(
+    { params }: PageProps
+): Promise<Metadata> {
+    const session = await getServerSession();
+    if (!session) {
+        redirect("/login")
+    }
+    const { username } = await params;
+    const decUsername = decodeURIComponent(username)
+    console.log(username);
 
-    const { username } = await params
+    const data = await getUser(decUsername, session.user.id);
+    return {
+        title: `${data.name} (@${data.username})`
+    }
+}
+
+export default async function Page({ params }: PageProps) {
 
     const session = await getServerSession();
     if (!session) {
         redirect("/login")
     }
+    const { username } = await params
+    const decUsername = decodeURIComponent(username)
 
-    const profileUser = await getUser(username, session.user.id)
 
-    console.log("SESSION:", session);
-    console.log("PROFILE:", profileUser);
+    const profileUser = await getUser(decUsername, session.user.id)
 
     const joinedDate = new Date(profileUser.createdAt).toLocaleDateString("en-GB", {
         day: "2-digit",
@@ -82,7 +99,7 @@ export default async function Page({ params }: PageProps) {
                             <span className='text-muted-foreground font-light text-sm'>@{profileUser.username}</span>
                         </div>
                         {
-                            profileUser.id !== session.user.id ? <Button variant={profileUser.isFollowing ? "secondary" : "default"}>Follow</Button> : null
+                            profileUser.id !== session.user.id ? <FollowButton userId={profileUser.id} initialState={{ followers: parseInt(profileUser.followerCount), isFollowedByUser: profileUser.isFollowing }}>Follow</FollowButton> : null
                         }
                     </div>
                     <div className="font-light py-2 text-sm">
@@ -90,7 +107,7 @@ export default async function Page({ params }: PageProps) {
                     </div>
                     <div className="flex gap-2 font-light py-2 text-sm">
                         <span>Posts: {profileUser.postsCount}</span>
-                        <span>Followers: {profileUser.followerCount}</span>
+                        <ShowFollowerCount userId={profileUser.id} initialState={{ followers: profileUser.followerCount, isFollowedByUser: profileUser.isFollowing }} />
                     </div>
                 </div>
                 <div className="rounded-2xl bg-card p-5 shadow-sm">

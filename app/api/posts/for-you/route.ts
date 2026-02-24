@@ -14,9 +14,7 @@ export async function GET(req: NextRequest) {
     }
 
     const pageSize = 10;
-
     const cursor = req.nextUrl.searchParams.get("cursor") || undefined
-
     const rawPosts = await db
         .select({
             id: post.id,
