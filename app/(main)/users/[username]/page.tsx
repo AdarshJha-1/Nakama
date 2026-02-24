@@ -1,10 +1,9 @@
 import FollowButton from '@/components/FollowButton'
 import ShowFollowerCount from '@/components/FollowerCount'
+import UserPosts from '@/components/UserPost'
 import { db } from '@/db/drizzle'
 import { follow, post, user } from '@/db/schema'
-import useFollowersInfo from '@/hooks/useFollowersInfo'
 import { getServerSession } from '@/lib/getServerSession'
-import { FollowerInfo } from '@/lib/types'
 import { eq, sql } from 'drizzle-orm'
 import { Metadata } from 'next'
 import Image from 'next/image'
@@ -115,15 +114,7 @@ export default async function Page({ params }: PageProps) {
                         {profileUser.name}&apos;s posts
                     </h2>
                 </div>
-                <UserPosts userId={profileUser.id} />
+                <UserPosts username={profileUser.username} userId={profileUser.id} />
             </div>
         </main >)
-}
-
-
-function UserPosts(userId: { userId: string }) {
-
-    return (
-        <div>page</div>
-    )
 }
