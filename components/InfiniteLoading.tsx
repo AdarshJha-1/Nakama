@@ -19,7 +19,6 @@ export default function InfiniteLoading({ className, children, onBottomReached }
         },
     })
 
-
     return (
         <div className={className}>
             {children}

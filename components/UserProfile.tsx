@@ -12,7 +12,7 @@ import Image from "next/image"
 import { Settings, UserIcon, } from "lucide-react";
 import SignOutButton from "./SignOutButton";
 import { UserType } from "@/lib/types";
-
+import Link from "next/link";
 
 interface UserProfileProps {
     user: UserType;
@@ -28,10 +28,12 @@ export default function UserProfile({ user }: UserProfileProps) {
             <DropdownMenuContent className="w-56" align="start">
                 <DropdownMenuLabel>{user.name}</DropdownMenuLabel>
                 <DropdownMenuGroup>
-                    <DropdownMenuItem className="flex items-center justify-between">
-                        Profile
-                        <UserIcon />
-                    </DropdownMenuItem>
+                    <Link href={`/users/${user.username}`}>
+                        <DropdownMenuItem className="flex items-center justify-between">
+                            Profile
+                            <UserIcon />
+                        </DropdownMenuItem>
+                    </Link>
                     <DropdownMenuItem>
                         Settings
                         <DropdownMenuShortcut><Settings /></DropdownMenuShortcut>

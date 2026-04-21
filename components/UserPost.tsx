@@ -10,7 +10,7 @@ import { PostWithUser } from "@/lib/types";
 export default function UserPosts({ userId }: { userId: string }) {
 
     const { data, fetchNextPage, hasNextPage, isFetching, status, isFetchingNextPage } = useInfiniteQuery({
-        queryKey: ["post-feed", "for-you"],
+        queryKey: ["post-feed"],
         queryFn: async ({ pageParam }) => {
             const searchParam = new URLSearchParams()
             if (pageParam) searchParam.append("cursor", pageParam)
@@ -58,5 +58,4 @@ export default function UserPosts({ userId }: { userId: string }) {
             }
         </InfiniteLoading>
     )
-
 }

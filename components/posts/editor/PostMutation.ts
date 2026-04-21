@@ -1,6 +1,7 @@
 import { QueryFilters, useMutation, useQueryClient } from "@tanstack/react-query";
 import { createPostAction } from "./createPostAction";
 import { toast } from "sonner";
+
 export function useSubmitPostMutation() {
 
     const queryClient = useQueryClient()
@@ -15,10 +16,7 @@ export function useSubmitPostMutation() {
             queryClient.setQueriesData(
                 queryFilter,
                 (oldData: any) => {
-                    console.log(oldData?.pages[0]);
-
                     const firstPage = oldData?.pages[0];
-
                     if (firstPage) {
                         return {
                             pageParams: oldData?.pageParams,

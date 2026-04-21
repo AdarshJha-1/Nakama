@@ -10,7 +10,6 @@ export const deletePostAction = async (id: string) => {
     if (!session) throw new Error("Unauthorized")
 
     const res = await db.delete(post).where(eq(post.id, id)).returning()
-    console.log(res);
     if (!res) {
         throw new Error("Post not found")
     }

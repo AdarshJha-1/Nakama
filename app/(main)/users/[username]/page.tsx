@@ -48,7 +48,6 @@ const getUser = cache(async (username: string, loggedInUserId: string) => {
     }).from(user).where(eq(user.username, username)).limit(1)
 
     if (!profileUser) notFound()
-
     return profileUser;
 })
 
@@ -61,7 +60,6 @@ export async function generateMetadata(
     }
     const { username } = await params;
     const decUsername = decodeURIComponent(username)
-    console.log(username);
 
     const data = await getUser(decUsername, session.user.id);
     return {
@@ -86,6 +84,8 @@ export default async function Page({ params }: PageProps) {
         month: "short",
         year: "numeric"
     })
+
+    console.log("first time on profile:", profileUser.followerCount, profileUser.isFollowing);
 
     return (
         <main className="flex w-full min-w-0 gap-5">

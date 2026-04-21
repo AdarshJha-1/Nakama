@@ -18,11 +18,8 @@ export function useDeletePostMutation() {
 
             queryClient.setQueriesData(
                 queryFilter,
-                (oldData) => {
-                    const firstPage = oldData?.pages[0];
-
+                (oldData: any) => {
                     if (!oldData) return;
-
                     return {
                         pageParams: oldData?.pageParams,
                         pages: oldData.pages.map(page => ({

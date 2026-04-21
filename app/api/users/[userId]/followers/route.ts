@@ -18,7 +18,7 @@ export async function GET(
             }, { status: 401 })
         }
 
-        const decUserId = decodeURIComponent(userId)
+        const decUserId = decodeURIComponent(await userId)
         const alreadyFollow = await db.query.follow.findFirst({
             where: and(
                 eq(follow.followerId, session.user.id),
