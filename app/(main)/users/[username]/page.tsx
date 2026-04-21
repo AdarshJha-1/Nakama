@@ -18,7 +18,7 @@ interface PageProps {
 
 const getUser = cache(async (username: string, loggedInUserId: string) => {
     const [profileUser] = await db.select({
-        id: user.id,
+
         name: user.name,
         username: user.username,
         image: user.image,

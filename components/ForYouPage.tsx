@@ -5,7 +5,7 @@ import { Loader2 } from "lucide-react";
 import PostCard from "./posts/PostCard";
 import InfiniteLoading from "./InfiniteLoading";
 import PostCardSkeleton from "./posts/PostCardSkeleton";
-import { PostWithUser } from "@/lib/types";
+import { PostDTO, PostPage } from "@/lib/types";
 
 export default function ForYouPage() {
 
@@ -18,7 +18,8 @@ export default function ForYouPage() {
             if (!res.ok) {
                 throw new Error("failed to fetch posts");
             }
-            return res.json();
+            const data: PostPage = await res.json();
+            return data;
         },
         initialPageParam: null as string | null,
         getNextPageParam: (lastPage) => lastPage.nextCursor
@@ -49,7 +50,7 @@ export default function ForYouPage() {
             hasNextPage && !isFetching && fetchNextPage()
         }}>
             {
-                post.map((post: PostWithUser, i: number) => (
+                post.map((post: PostDTO, i: number) => (
                     <PostCard key={i} post={post} />
                 ))
             }

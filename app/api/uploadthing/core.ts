@@ -1,10 +1,12 @@
+import { db } from "@/db/drizzle";
+import { user } from "@/db/schema";
 import { getServerSession } from "@/lib/getServerSession";
 import { createUploadthing, FileRouter } from "uploadthing/next"
 import { UploadThingError } from "uploadthing/server"
 
 const f = createUploadthing();
 
-export const fileRoute = {
+export const fileRouter = {
     avatar: f({
         image: { maxFileSize: "512KB" }
     })
@@ -13,14 +15,19 @@ export const fileRoute = {
             if (!session?.user) {
                 throw new UploadThingError("Unauthorized")
             }
-            return { session.user }
+            const user = session.user;
+            return { user }
         })
         .onUploadComplete(async ({ metadata, file }) => {
-            const newAvatarURL = file.url.replace(
-                "/f",
+            const newAvtarUrl = file.url.replace(
+                "/f/",
                 `/a/${process.env.NEXT_PUBLIC_UPLOADTHING_APP_ID}/`,
             )
 
-            return newAvatarURL
+            await db.update(user).set({ image: newAvtarUrl }).where(eq(user.id, metadata.user.id))
+
+            return { image: newAvtarUrl }
         })
 } satisfies FileRouter
+
+export type AppFileRouter = typeof fileRouter

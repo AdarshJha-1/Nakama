@@ -5,7 +5,7 @@ import { Loader2 } from "lucide-react";
 import PostCard from "./posts/PostCard";
 import InfiniteLoading from "./InfiniteLoading";
 import PostCardSkeleton from "./posts/PostCardSkeleton";
-import { PostWithUser } from "@/lib/types";
+import { PostDTO } from "@/lib/types";
 
 export default function FollowingPage() {
 
@@ -49,7 +49,7 @@ export default function FollowingPage() {
             hasNextPage && !isFetching && fetchNextPage()
         }}>
             {
-                post.map((post: PostWithUser, i: number) => (
+                post.map((post: PostDTO, i: number) => (
                     <PostCard key={i} post={post} />
                 ))
             }

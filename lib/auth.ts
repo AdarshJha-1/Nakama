@@ -34,10 +34,15 @@ export const auth = betterAuth({
         user: {
             create: {
                 before: async (user) => {
+                    const base = (user.name || "user")
+                        .toLowerCase()
+                        .trim()
+                        .replace(/\s+/g, "-")
+                        .replace(/[^a-z0-9-]/g, "");
                     return {
                         data: {
                             ...user,
-                            username: `${user.name.toLowerCase()}-${Date.now()}`
+                            username: `${base}-${crypto.randomUUID().slice(0, 6)}`
                         }
                     }
                 }

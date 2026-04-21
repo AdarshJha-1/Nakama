@@ -4,13 +4,16 @@ import { db } from "@/db/drizzle"
 import { post } from "@/db/schema"
 import { getServerSession } from "@/lib/getServerSession"
 import { PostWithUser } from "@/lib/types"
+import { createPostSchema } from "@/lib/validation"
 import { nanoid } from "nanoid"
 
-export const createPostAction = async (content: string): Promise<PostWithUser> => {
+export const createPostAction = async (input: string): Promise<PostWithUser> => {
 
     const session = await getServerSession()
     if (!session) throw new Error("Unauthorized")
     const user = session?.user;
+
+    const { content } = createPostSchema.parse({ content: input })
 
     const res = await db.insert(post)
         .values(

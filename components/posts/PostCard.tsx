@@ -1,4 +1,4 @@
-import { PostWithUser } from "@/lib/types"
+import { PostDTO } from "@/lib/types"
 import UserProfile from "../UserProfile"
 import Link from "next/link"
 import { formatDate } from "@/lib/date-format";
@@ -21,7 +21,7 @@ import {
 import { Button } from "../ui/button";
 import { useDeletePostMutation } from "./mutation";
 
-export default function PostCard({ post }: { post: PostWithUser }) {
+export default function PostCard({ post }: { post: PostDTO }) {
 
     const date = new Date(post.createdAt)
     const formattedDate = formatDate(date.getTime());
