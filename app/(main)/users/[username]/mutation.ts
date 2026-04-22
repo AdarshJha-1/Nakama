@@ -1,16 +1,16 @@
 import { useUploadThing } from "@/lib/uploadthing";
 import { UpdateUserProfileType } from "@/lib/validation";
-import { QueryFilters, useMutation, useQueryClient } from "@tanstack/react-query";
+import { InfiniteData, QueryFilters, useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { updateUserProfile } from "./action";
 import { useRouter } from "next/navigation";
+import { PostPage } from "@/lib/types";
 
 
 export function useUpdateProfileMutation() {
 
     const router = useRouter()
     const { startUpload: startAvatarUpload } = useUploadThing("avatar")
-
     const queryClient = useQueryClient()
     const mutation = useMutation({
         mutationFn: async ({ values, avatar }: { values: UpdateUserProfileType, avatar?: File }) => {
@@ -20,23 +20,23 @@ export function useUpdateProfileMutation() {
             ])
         },
         onSuccess: async ([updatedUser, uploadRes]) => {
-            const newAvatarUrl = uploadRes[0].serverData.image
+            const newAvatarUrl = uploadRes?.[0].serverData.image
 
 
             const queryFilter: QueryFilters = { queryKey: ["post-feed"] }
 
             await queryClient.cancelQueries(queryFilter)
 
-            queryClient.setQueriesData(
+            queryClient.setQueriesData<InfiniteData<PostPage, string | null>>(
                 queryFilter,
-                (oldData: any) => {
+                (oldData) => {
                     if (!oldData) return;
                     return {
-                        pageParams: oldData?.pageParams,
+                        pageParams: oldData.pageParams,
                         pages: oldData.pages.map(page => ({
                             nextCursor: page.nextCursor,
                             posts: page.posts.map(post => {
-                                if (post.userId === updatedUser.id) {
+                                if (post.author.id === updatedUser.id) {
                                     return {
                                         ...post,
                                         author: {

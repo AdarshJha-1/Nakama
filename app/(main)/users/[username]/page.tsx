@@ -2,9 +2,10 @@ import FollowButton from '@/components/FollowButton'
 import ShowFollowerCount from '@/components/FollowerCount'
 import UserPosts from '@/components/UserPost'
 import { db } from '@/db/drizzle'
-import { follow, post, user } from '@/db/schema'
+import { userFromDB } from '@/db/helper'
+import { user } from '@/db/schema'
 import { getServerSession } from '@/lib/getServerSession'
-import { eq, sql } from 'drizzle-orm'
+import { eq } from 'drizzle-orm'
 import { Metadata } from 'next'
 import Image from 'next/image'
 import { notFound, redirect } from 'next/navigation'
@@ -17,35 +18,8 @@ interface PageProps {
 }
 
 const getUser = cache(async (username: string, loggedInUserId: string) => {
-    const [profileUser] = await db.select({
-
-        name: user.name,
-        username: user.username,
-        image: user.image,
-        createdAt: user.createdAt,
-
-        followerCount: sql<number>`(
-            select count(*)
-            from ${follow}
-            where ${follow.followingId} = ${user.id}
-        )`,
-        postsCount: sql<number>`
-          (
-            select count(*) 
-            from ${post}
-            where ${post.userId} = ${user.id}
-          )
-        `,
-        isFollowing: sql<boolean>`
-          exists (
-            select 1
-            from ${follow}
-            where ${follow.followingId} = ${user.id}
-            and ${follow.followerId} = ${loggedInUserId}
-          )
-        `,
-
-    }).from(user).where(eq(user.username, username)).limit(1)
+    const [profileUser] = await db.select(userFromDB(loggedInUserId)
+    ).from(user).where(eq(user.username, username)).limit(1)
 
     if (!profileUser) notFound()
     return profileUser;
@@ -85,8 +59,6 @@ export default async function Page({ params }: PageProps) {
         year: "numeric"
     })
 
-    console.log("first time on profile:", profileUser.followerCount, profileUser.isFollowing);
-
     return (
         <main className="flex w-full min-w-0 gap-5">
             <div className="w-full min-w-0 space-y-5">
@@ -98,7 +70,7 @@ export default async function Page({ params }: PageProps) {
                             <span className='text-muted-foreground font-light text-sm'>@{profileUser.username}</span>
                         </div>
                         {
-                            profileUser.id !== session.user.id ? <FollowButton userId={profileUser.id} initialState={{ followers: parseInt(profileUser.followerCount), isFollowedByUser: profileUser.isFollowing }}>Follow</FollowButton> : null
+                            profileUser.id !== session.user.id ? <FollowButton userId={profileUser.id} initialState={{ followers: profileUser.followerCount, isFollowedByUser: profileUser.isFollowing }} /> : null
                         }
                     </div>
                     <div className="font-light py-2 text-sm">
@@ -114,7 +86,7 @@ export default async function Page({ params }: PageProps) {
                         {profileUser.name}&apos;s posts
                     </h2>
                 </div>
-                <UserPosts username={profileUser.username} userId={profileUser.id} />
+                <UserPosts userId={profileUser.id} />
             </div>
         </main >)
 }

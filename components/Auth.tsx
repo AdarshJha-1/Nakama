@@ -10,7 +10,7 @@ export default function Auth() {
     return (
         <div className="flex items-center justify-center gap-5">
             <DarkModeToggle />
-            <UserProfile user={user} />
+            <UserProfile user={{ image: user.image, name: user.name, username: user.username }} />
         </div>
     )
 }

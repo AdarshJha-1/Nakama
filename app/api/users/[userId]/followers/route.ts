@@ -4,10 +4,9 @@ import { getServerSession } from "@/lib/getServerSession";
 import { FollowerInfo } from "@/lib/types";
 import { and, eq, sql } from "drizzle-orm";
 
-
 export async function GET(
     req: Request,
-    { params: { userId } }: { params: { userId: string } }
+    { params }: { params: Promise<{ userId: string }> }
 ) {
     try {
         const session = await getServerSession();
@@ -18,7 +17,8 @@ export async function GET(
             }, { status: 401 })
         }
 
-        const decUserId = decodeURIComponent(await userId)
+        const { userId } = await params
+        const decUserId = decodeURIComponent(userId)
         const alreadyFollow = await db.query.follow.findFirst({
             where: and(
                 eq(follow.followerId, session.user.id),
@@ -26,7 +26,7 @@ export async function GET(
             )
         })
         const followersCount = await db
-            .select({ count: sql<number>`count(*)` })
+            .select({ count: sql<number>`COUNT(*)::int` })
             .from(follow)
             .where(eq(follow.followingId, decUserId))
 
@@ -35,8 +35,6 @@ export async function GET(
             isFollowedByUser: !!alreadyFollow
         }
         return Response.json({
-            success: true,
-            message: "follow info",
             data
         }, { status: 200 })
 

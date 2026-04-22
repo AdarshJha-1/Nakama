@@ -9,7 +9,6 @@ import {
 import ForYouPage from "../ForYouPage";
 import FollowingPage from "../FollowingPage";
 
-
 export default function PostPage() {
 
     return (

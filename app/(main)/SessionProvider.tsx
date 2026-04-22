@@ -1,11 +1,11 @@
 "use client"
 
-import { User } from "@/lib/auth";
+import { AuthUser } from "@/lib/auth";
 import { Session } from "better-auth";
 import { createContext, useContext } from "react"
 
 interface SessionContext {
-    user: User;
+    user: AuthUser;
     session: Session;
 }
 

@@ -1,7 +1,8 @@
-import { QueryFilters, useMutation, useQueryClient } from "@tanstack/react-query";
+import { InfiniteData, QueryFilters, useMutation, useQueryClient } from "@tanstack/react-query";
 import { deletePostAction } from "./action";
 import { toast } from "sonner";
 import { usePathname, useRouter } from "next/navigation";
+import { PostPage } from "@/lib/types";
 
 export function useDeletePostMutation() {
     const queryClient = useQueryClient();
@@ -16,9 +17,9 @@ export function useDeletePostMutation() {
 
             await queryClient.cancelQueries(queryFilter)
 
-            queryClient.setQueriesData(
+            queryClient.setQueriesData<InfiniteData<PostPage, string | null>>(
                 queryFilter,
-                (oldData: any) => {
+                (oldData) => {
                     if (!oldData) return;
                     return {
                         pageParams: oldData?.pageParams,
@@ -27,7 +28,6 @@ export function useDeletePostMutation() {
                             posts: page.posts.filter(p => p.id != res.id)
                         }))
                     }
-
                 }
             )
 

@@ -1,6 +1,6 @@
 import { db } from "@/db/drizzle";
 import { userFromDB } from "@/db/helper";
-import { bookmarks, comments, follow, likes, post, user } from "@/db/schema";
+import { bookmarks, comments, likes, post, user } from "@/db/schema";
 import { getServerSession } from "@/lib/getServerSession";
 import { PostDTO, PostPage } from "@/lib/types";
 import { desc, eq, lt, sql, } from "drizzle-orm";

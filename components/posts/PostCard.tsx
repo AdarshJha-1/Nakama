@@ -35,7 +35,7 @@ export default function PostCard({ post }: { post: PostDTO }) {
     return (
         <div className="min-h-28 bg-card flex items-start gap-3 rounded-2xl px-5 py-3 text-sm">
             <div className="shrink-0">
-                <UserProfile user={post.author} />
+                <UserProfile user={{ image: post.author.image, name: post.author.name, username: post.author.username }} />
             </div>
             <div className="w-full flex gap-2 flex-col">
                 <div className="flex items-center justify-start">

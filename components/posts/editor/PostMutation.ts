@@ -1,6 +1,7 @@
-import { QueryFilters, useMutation, useQueryClient } from "@tanstack/react-query";
+import { InfiniteData, QueryFilters, useMutation, useQueryClient } from "@tanstack/react-query";
 import { createPostAction } from "./createPostAction";
 import { toast } from "sonner";
+import { PostPage } from "@/lib/types";
 
 export function useSubmitPostMutation() {
 
@@ -13,9 +14,9 @@ export function useSubmitPostMutation() {
 
             await queryClient.cancelQueries(queryFilter)
 
-            queryClient.setQueriesData(
+            queryClient.setQueriesData<InfiniteData<PostPage, string | null>>(
                 queryFilter,
-                (oldData: any) => {
+                (oldData) => {
                     if (!oldData) return;
                     const firstPage = oldData?.pages[0];
                     if (firstPage) {

@@ -7,7 +7,7 @@ export type UserDTO = {
     id: string;
     name: string;
     username: string;
-    image: string | null;
+    image?: string | null | undefined;
     createdAt: Date;
 
     isFollowed: boolean;

@@ -1,37 +1,90 @@
 "use server"
 
 import { db } from "@/db/drizzle"
-import { post } from "@/db/schema"
+import { userFromDB } from "@/db/helper"
+import { bookmarks, comments, likes, post, user } from "@/db/schema"
 import { getServerSession } from "@/lib/getServerSession"
-import { PostWithUser } from "@/lib/types"
+import { PostDTO } from "@/lib/types"
 import { createPostSchema } from "@/lib/validation"
+import { eq, sql } from "drizzle-orm"
 import { nanoid } from "nanoid"
 
-export const createPostAction = async (input: string): Promise<PostWithUser> => {
+export const createPostAction = async (input: string): Promise<PostDTO> => {
 
     const session = await getServerSession()
     if (!session) throw new Error("Unauthorized")
-    const user = session?.user;
 
     const { content } = createPostSchema.parse({ content: input })
 
-    const res = await db.insert(post)
+    const [newPost] = await db.insert(post)
         .values(
-            { content, userId: user.id, id: nanoid() })
-        .returning({ id: post.id, content: post.content, createdAt: post.createdAt })
-    const newPost = res[0]
-    return {
-        id: newPost.id,
-        content: newPost.content,
-        createdAt: newPost.createdAt,
+            { content, userId: session.user.id, id: nanoid() })
+        .returning()
+
+
+    const [p] = await db.select({
+        id: post.id,
+        content: post.content,
+        createdAt: post.createdAt,
+
+        author: userFromDB(session.user.id),
+        isLiked: sql<boolean>`
+                EXISTS (
+                    SELECT 1 FROM ${likes}
+                    WHERE ${likes.postId} = ${post.id}
+                    AND ${likes.userId} = ${session.user.id}
+                )
+                `,
+        isBookmarked: sql<boolean>`
+                EXISTS (
+                    SELECT 1 FROM ${bookmarks}
+                    WHERE ${bookmarks.postId} = ${post.id}
+                    AND ${bookmarks.userId} = ${session.user.id}
+                )
+                `,
+        likeCount: sql<number>`(
+                SELECT COUNT(*)::int 
+                FROM ${likes} 
+                WHERE ${likes.postId} = ${post.id})`
+            .as("like_count"),
+
+        bookmarkCount: sql<number>`(
+                SELECT COUNT(*)::int 
+                FROM ${bookmarks} 
+                WHERE ${bookmarks.postId} = ${post.id})`
+            .as("bookmark_count"),
+        commentCount: sql<number>`(
+                SELECT COUNT(*)::int 
+                FROM ${comments} 
+                WHERE ${comments.postId} = ${post.id})`
+            .as("comment_count"),
+    })
+        .from(post).innerJoin(user, eq(user.id, post.userId))
+        .where(eq(post.id, newPost.id))
+        .limit(1)
+
+    const data: PostDTO = {
+        id: p.id,
+        content: p.content,
+        createdAt: p.createdAt,
         author: {
-            id: user.id,
-            name: user.name,
-            username: user.username,
-            image: user.image as string
+            id: p.author.id,
+            name: p.author.name,
+            username: p.author.username,
+            image: p.author.image,
+            createdAt: p.author.createdAt,
+
+
+            isFollowed: p.author.isFollowing,
+            followerCount: Number(p.author.followerCount),
+            postCount: Number(p.author.postsCount),
+
         },
-        likeCount: 0,
-        bookmarkCount: 0,
-        commentCount: 0
+        isLiked: p.isLiked,
+        isBookmarked: p.isBookmarked,
+        likeCount: Number(p.likeCount) ?? 0,
+        bookmarkCount: Number(p.bookmarkCount) ?? 0,
+        commentCount: Number(p.commentCount) ?? 0,
     }
+    return data
 }

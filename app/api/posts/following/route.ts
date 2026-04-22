@@ -1,7 +1,9 @@
 import { db } from "@/db/drizzle";
-import { bookmarks, comments, follow, likes, post, user } from "@/db/schema";
+import { userFromDB } from "@/db/helper";
+import { bookmarks, comments, likes, post, user } from "@/db/schema";
 import { getServerSession } from "@/lib/getServerSession";
-import { and, desc, eq, lt, sql, } from "drizzle-orm";
+import { PostDTO, PostPage } from "@/lib/types";
+import { desc, eq, lt, sql, } from "drizzle-orm";
 import { NextRequest } from "next/server";
 
 export async function GET(req: NextRequest) {
@@ -21,22 +23,43 @@ export async function GET(req: NextRequest) {
             content: post.content,
             createdAt: post.createdAt,
 
-            authorId: user.id,
-            authorName: user.name,
-            authorUsername: user.username,
-            authorImage: user.image,
+            author: userFromDB(session.user.id),
+            isLiked: sql<boolean>`
+                EXISTS (
+                    SELECT 1 FROM ${likes}
+                    WHERE ${likes.postId} = ${post.id}
+                    AND ${likes.userId} = ${session.user.id}
+                )
+                `,
 
-            likeCount: sql<number>`(SELECT COUNT(*) FROM ${likes} WHERE ${likes.postId} = ${post.id})`.as("like_count"),
-            bookmarkCount: sql<number>`(SELECT COUNT(*) FROM ${bookmarks} WHERE ${bookmarks.postId} = ${post.id})`.as("bookmark_count"),
-            commentCount: sql<number>`(SELECT COUNT(*) FROM ${comments} WHERE ${comments.postId} = ${post.id})`.as("comment_count"),
+            isBookmarked: sql<boolean>`
+                EXISTS (
+                    SELECT 1 FROM ${bookmarks}
+                    WHERE ${bookmarks.postId} = ${post.id}
+                    AND ${bookmarks.userId} = ${session.user.id}
+                )
+                `,
+            likeCount: sql<number>`(
+                SELECT COUNT(*)::int 
+                FROM ${likes} 
+                WHERE ${likes.postId} = ${post.id})`
+                .as("like_count"),
+
+            bookmarkCount: sql<number>`(
+                SELECT COUNT(*)::int 
+                FROM ${bookmarks} 
+                WHERE ${bookmarks.postId} = ${post.id})`
+                .as("bookmark_count"),
+            commentCount: sql<number>`(
+                SELECT COUNT(*)::int 
+                FROM ${comments} 
+                WHERE ${comments.postId} = ${post.id})`
+                .as("comment_count"),
         })
-        .from(post).innerJoin(user, eq(user.id, post.userId)).innerJoin(follow, and(
-            eq(follow.followingId, post.userId),
-            eq(follow.followerId, session.user.id)
-        ))
-        .where(cursor ? lt(post.createdAt, new Date(cursor)) : undefined)
+        .from(post).innerJoin(user, eq(user.id, post.userId))
+        .where(cursor ? lt(post.id, cursor) : undefined)
         .limit(pageSize + 1)
-        .orderBy(desc(post.createdAt))
+        .orderBy(desc(post.id))
 
 
 
@@ -45,26 +68,35 @@ export async function GET(req: NextRequest) {
 
     const nextCursor =
         hasMore && postsToReturn.length > 0
-            ? postsToReturn[postsToReturn.length - 1].createdAt.toISOString()
+            ? postsToReturn[postsToReturn.length - 1].id
             : null;
 
-    const formattedPosts = postsToReturn.map(p => ({
+    const formattedPosts: PostDTO[] = postsToReturn.map(p => ({
         id: p.id,
         content: p.content,
         createdAt: p.createdAt,
         author: {
-            id: p.authorId,
-            name: p.authorName,
-            username: p.authorUsername,
-            image: p.authorImage,
+            id: p.author.id,
+            name: p.author.name,
+            username: p.author.username,
+            image: p.author.image,
+            createdAt: p.author.createdAt,
+
+
+            isFollowed: p.author.isFollowing,
+            followerCount: Number(p.author.followerCount),
+            postCount: Number(p.author.postsCount),
+
         },
+        isLiked: p.isLiked,
+        isBookmarked: p.isBookmarked,
         likeCount: Number(p.likeCount) ?? 0,
         bookmarkCount: Number(p.bookmarkCount) ?? 0,
         commentCount: Number(p.commentCount) ?? 0,
     }));
-    return Response.json({
-        success: true,
+    const data: PostPage = {
         posts: formattedPosts,
-        nextCursor,
-    }, { status: 200 })
+        nextCursor: nextCursor
+    }
+    return Response.json(data, { status: 200 })
 }

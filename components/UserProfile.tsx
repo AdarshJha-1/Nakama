@@ -11,11 +11,14 @@ import {
 import Image from "next/image"
 import { Settings, UserIcon, } from "lucide-react";
 import SignOutButton from "./SignOutButton";
-import { UserType } from "@/lib/types";
 import Link from "next/link";
 
 interface UserProfileProps {
-    user: UserType;
+    user: {
+        image?: string | null | undefined;
+        name: string,
+        username: string
+    }
 }
 
 export default function UserProfile({ user }: UserProfileProps) {
