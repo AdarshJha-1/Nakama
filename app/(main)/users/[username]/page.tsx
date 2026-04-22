@@ -9,6 +9,7 @@ import { Metadata } from 'next'
 import Image from 'next/image'
 import { notFound, redirect } from 'next/navigation'
 import { cache } from 'react'
+import { EditButton } from './EditButton'
 
 interface PageProps {
     params: Promise<{
@@ -94,7 +95,10 @@ export default async function Page({ params }: PageProps) {
                             <span className='text-muted-foreground font-light text-sm'>@{profileUser.username}</span>
                         </div>
                         {
-                            profileUser.id !== session.user.id ? <FollowButton userId={profileUser.id} initialState={{ followers: profileUser.followerCount, isFollowedByUser: profileUser.isFollowing }} /> : null
+                            profileUser.id !== session.user.id && <FollowButton userId={profileUser.id} initialState={{ followers: profileUser.followerCount, isFollowedByUser: profileUser.isFollowing }} />
+                        }
+                        {
+                            profileUser.id === session.user.id && <EditButton name={profileUser.name} />
                         }
                     </div>
                     <div className="font-light py-2 text-sm">
