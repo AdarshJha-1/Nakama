@@ -1,5 +1,5 @@
 import { db } from "@/db/drizzle";
-import { userFromDB } from "@/db/helper";
+import { userOfPost } from "@/db/helper";
 import { bookmarks, comments, likes, post, user } from "@/db/schema";
 import { getServerSession } from "@/lib/getServerSession";
 import { PostDTO, PostPage } from "@/lib/types";
@@ -26,7 +26,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ user
             content: post.content,
             createdAt: post.createdAt,
 
-            author: userFromDB(session.user.id),
+            author: userOfPost(session.user.id),
             isLiked: sql<boolean>`
                 EXISTS (
                     SELECT 1 FROM ${likes}

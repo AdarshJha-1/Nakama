@@ -35,12 +35,17 @@ export default function FollowButton({ userId, initialState }: FollowButtonProps
             const queryKey: QueryKey = ["follower-info", userId]
             await queryClient.cancelQueries({ queryKey })
             const prevState = queryClient.getQueryData<FollowerInfo>(queryKey)
-            if (!prevState) return prevState;
+            if (!prevState) return { prevState }
             queryClient.setQueryData<FollowerInfo>(queryKey, () => ({
-                followers: (prevState?.followers || 0) + (isFollowing ? -1 : 1),
-                isFollowedByUser: !prevState?.isFollowedByUser
+                followers: isFollowing ? prevState.followers - 1 : prevState.followers + 1,
+                isFollowedByUser: !prevState.isFollowedByUser
             }))
             return { prevState }
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({
+                queryKey: ["follower-info", userId],
+            });
         },
         onError(error, variables, context) {
             const queryKey: QueryKey = ["follower-info", userId]

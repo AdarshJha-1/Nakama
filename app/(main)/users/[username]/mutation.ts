@@ -21,12 +21,8 @@ export function useUpdateProfileMutation() {
         },
         onSuccess: async ([updatedUser, uploadRes]) => {
             const newAvatarUrl = uploadRes?.[0].serverData.image
-
-
             const queryFilter: QueryFilters = { queryKey: ["post-feed"] }
-
             await queryClient.cancelQueries(queryFilter)
-
             queryClient.setQueriesData<InfiniteData<PostPage, string | null>>(
                 queryFilter,
                 (oldData) => {

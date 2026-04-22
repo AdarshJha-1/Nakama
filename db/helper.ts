@@ -1,7 +1,7 @@
 import { sql } from "drizzle-orm";
 import { follow, post, user } from "./schema";
 
-export function userFromDB(loggedInUserId: string) {
+export function userOfPost(loggedInUserId: string) {
     return {
         id: user.id,
         name: user.name,
@@ -13,8 +13,8 @@ export function userFromDB(loggedInUserId: string) {
                 EXISTS (
                 SELECT 1 
                 FROM ${follow}
-                WHERE ${follow.followingId} = ${loggedInUserId}
-                AND ${follow.followerId} = ${post.userId})`,
+                WHERE ${follow.followerId} = ${loggedInUserId}
+                AND ${follow.followingId} = ${user.id})`,
         followerCount: sql<number>`(
                 SELECT COUNT(*)::int
                 FROM ${follow}

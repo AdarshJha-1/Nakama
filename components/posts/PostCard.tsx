@@ -1,36 +1,25 @@
+"use client"
+
 import { PostDTO } from "@/lib/types"
 import UserProfile from "../UserProfile"
 import Link from "next/link"
 import { formatDate } from "@/lib/date-format";
-import { Bookmark, Dot, Edit, Heart, MessageCircleIcon, MoreVertical, Trash } from "lucide-react";
+import { Bookmark, Dot, Heart, MessageCircleIcon } from "lucide-react";
 import Image from "next/image";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../ui/dropdown-menu";
-
-
-import {
-    AlertDialog,
-    AlertDialogAction,
-    AlertDialogCancel,
-    AlertDialogContent,
-    AlertDialogDescription,
-    AlertDialogFooter,
-    AlertDialogHeader,
-    AlertDialogTitle,
-    AlertDialogTrigger,
-} from "@/components/ui/alert-dialog"
-import { Button } from "../ui/button";
-import { useDeletePostMutation } from "./mutation";
+import PostMore from "../PostMore";
+import { useRouter } from "next/navigation";
+import { useSession } from "@/app/(main)/SessionProvider";
 
 export default function PostCard({ post }: { post: PostDTO }) {
 
+    const { session } = useSession()
+    const router = useRouter()
+    if (!session) {
+        router.push("/auth")
+        return
+    }
     const date = new Date(post.createdAt)
     const formattedDate = formatDate(date.getTime());
-
-    const mutation = useDeletePostMutation();
-
-    const handleDeletePost = () => {
-        mutation.mutate(post.id)
-    }
 
     return (
         <div className="min-h-28 bg-card flex items-start gap-3 rounded-2xl px-5 py-3 text-sm">
@@ -70,41 +59,11 @@ export default function PostCard({ post }: { post: PostDTO }) {
                     <div className="flex gap-1">
                         <Bookmark /> {post.bookmarkCount}
                     </div>
-                    <div className="flex gap-1">
-                        <DropdownMenu>
-                            <DropdownMenuTrigger>
-                                <MoreVertical />
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent className="flex flex-col gap-1">
-                                <DropdownMenuItem asChild>
-                                    <AlertDialog>
-                                        <AlertDialogTrigger asChild>
-                                            <Button className="w-full" variant={"ghost"}><Trash /> Delete</Button>
-                                        </AlertDialogTrigger>
-                                        <AlertDialogContent>
-                                            <AlertDialogHeader>
-                                                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                                                <AlertDialogDescription>
-                                                    This action cannot be undone. This will permanently delete your post
-                                                    from our servers.
-                                                </AlertDialogDescription>
-                                            </AlertDialogHeader>
-                                            <AlertDialogFooter>
-                                                {/* This button does not close after deletion is done have to fix it, maybe will use another shadcn component */}
-                                                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                                <AlertDialogAction onClick={handleDeletePost} variant={"destructive"}>Delete</AlertDialogAction>
-                                            </AlertDialogFooter>
-                                        </AlertDialogContent>
-                                    </AlertDialog>
-                                </DropdownMenuItem>
-                                <DropdownMenuItem asChild>
-                                    <Button className="w-full" variant={"ghost"}><Edit /> Edit</Button>
-                                </DropdownMenuItem>
-                            </DropdownMenuContent>
-                        </DropdownMenu>
-                    </div>
+                    {
+                        post.author.id === session?.userId && <PostMore id={post.id} />
+                    }
                 </div>
             </div>
-        </div>
+        </div >
     )
 }

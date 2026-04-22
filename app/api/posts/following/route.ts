@@ -1,9 +1,9 @@
 import { db } from "@/db/drizzle";
-import { userFromDB } from "@/db/helper";
-import { bookmarks, comments, likes, post, user } from "@/db/schema";
+import { userOfPost } from "@/db/helper";
+import { bookmarks, comments, follow, likes, post, user } from "@/db/schema";
 import { getServerSession } from "@/lib/getServerSession";
 import { PostDTO, PostPage } from "@/lib/types";
-import { desc, eq, lt, sql, } from "drizzle-orm";
+import { and, desc, eq, lt, sql, } from "drizzle-orm";
 import { NextRequest } from "next/server";
 
 export async function GET(req: NextRequest) {
@@ -23,7 +23,7 @@ export async function GET(req: NextRequest) {
             content: post.content,
             createdAt: post.createdAt,
 
-            author: userFromDB(session.user.id),
+            author: userOfPost(session.user.id),
             isLiked: sql<boolean>`
                 EXISTS (
                     SELECT 1 FROM ${likes}
@@ -57,7 +57,16 @@ export async function GET(req: NextRequest) {
                 .as("comment_count"),
         })
         .from(post).innerJoin(user, eq(user.id, post.userId))
-        .where(cursor ? lt(post.id, cursor) : undefined)
+        .where(and(cursor ? lt(post.id, cursor) : undefined,
+            sql`
+            EXISTS (
+                SELECT 1 
+                FROM ${follow}
+                WHERE ${follow.followerId} = ${session.user.id}
+                AND ${follow.followingId} = ${post.userId}
+            )
+        `
+        ))
         .limit(pageSize + 1)
         .orderBy(desc(post.id))
 
