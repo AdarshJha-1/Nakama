@@ -28,8 +28,8 @@ const getUser = cache(async (username: string, loggedInUserId: string) => {
                 EXISTS (
                 SELECT 1 
                 FROM ${follow}
-                WHERE ${follow.followingId} = ${loggedInUserId}
-                AND ${follow.followerId} = ${user.id})`,
+                WHERE ${follow.followerId} = ${loggedInUserId}
+                AND ${follow.followingId} = ${user.id})`,
             followerCount: sql<number>`(
                 SELECT COUNT(*)::int
                 FROM ${follow}
@@ -74,6 +74,8 @@ export default async function Page({ params }: PageProps) {
 
 
     const profileUser = await getUser(decUsername, session.user.id)
+    console.log(profileUser.followerCount, profileUser.isFollowing);
+
 
     const joinedDate = new Date(profileUser.createdAt).toLocaleDateString("en-GB", {
         day: "2-digit",

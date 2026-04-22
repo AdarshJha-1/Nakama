@@ -10,6 +10,7 @@ interface ShowFollowerCountProps {
 
 export default function ShowFollowerCount({ initialState, userId }: ShowFollowerCountProps) {
     const { data } = useFollowersInfo(userId, initialState)
+    console.log(data);
     return (
         <span>Followers: {data.followers}</span>
     )
