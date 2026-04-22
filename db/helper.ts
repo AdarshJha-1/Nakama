@@ -14,9 +14,7 @@ export function userFromDB(loggedInUserId: string) {
                 SELECT 1 
                 FROM ${follow}
                 WHERE ${follow.followingId} = ${loggedInUserId}
-                AND ${follow.followerId} = ${post.userId})`
-            .as("followers"),
-
+                AND ${follow.followerId} = ${post.userId})`,
         followerCount: sql<number>`(
                 SELECT COUNT(*)::int
                 FROM ${follow}
@@ -27,6 +25,5 @@ export function userFromDB(loggedInUserId: string) {
                 FROM ${post}
                 WHERE ${post.userId} = ${user.id}
             )`,
-
     }
 }

@@ -2,10 +2,9 @@ import FollowButton from '@/components/FollowButton'
 import ShowFollowerCount from '@/components/FollowerCount'
 import UserPosts from '@/components/UserPost'
 import { db } from '@/db/drizzle'
-import { userFromDB } from '@/db/helper'
-import { user } from '@/db/schema'
+import { follow, post, user } from '@/db/schema'
 import { getServerSession } from '@/lib/getServerSession'
-import { eq } from 'drizzle-orm'
+import { eq, sql } from 'drizzle-orm'
 import { Metadata } from 'next'
 import Image from 'next/image'
 import { notFound, redirect } from 'next/navigation'
@@ -18,7 +17,30 @@ interface PageProps {
 }
 
 const getUser = cache(async (username: string, loggedInUserId: string) => {
-    const [profileUser] = await db.select(userFromDB(loggedInUserId)
+    const [profileUser] = await db.select(
+        {
+            id: user.id,
+            name: user.name,
+            username: user.username,
+            image: user.image,
+            createdAt: user.createdAt,
+            isFollowing: sql<boolean>`
+                EXISTS (
+                SELECT 1 
+                FROM ${follow}
+                WHERE ${follow.followingId} = ${loggedInUserId}
+                AND ${follow.followerId} = ${user.id})`,
+            followerCount: sql<number>`(
+                SELECT COUNT(*)::int
+                FROM ${follow}
+                WHERE ${follow.followingId} = ${user.id}
+            )`,
+            postsCount: sql<number>`(
+                SELECT COUNT(*)::int
+                FROM ${post}
+                WHERE ${post.userId} = ${user.id}
+            )`,
+        }
     ).from(user).where(eq(user.username, username)).limit(1)
 
     if (!profileUser) notFound()
