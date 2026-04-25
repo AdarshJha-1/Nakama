@@ -12,13 +12,12 @@ interface FollowButtonProps {
 export default function FollowButton({ userId, initialState }: FollowButtonProps) {
 
     const { data } = useFollowersInfo(userId, initialState)
-    console.log(data);
 
     const queryClient = useQueryClient()
+
     const { mutate, isPending } = useMutation({
         mutationFn: async ({ isFollowing }: { isFollowing: boolean }) => {
             if (isFollowing) {
-
                 const res = await fetch(`/api/users/${userId}/followers`, {
                     method: "DELETE"
                 })

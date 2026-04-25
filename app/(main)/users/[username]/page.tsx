@@ -1,6 +1,6 @@
 import FollowButton from '@/components/FollowButton'
 import ShowFollowerCount from '@/components/FollowerCount'
-import UserPosts from '@/components/UserPost'
+import UserPosts from '@/components/users/UserPost'
 import { db } from '@/db/drizzle'
 import { follow, post, user } from '@/db/schema'
 import { getServerSession } from '@/lib/getServerSession'

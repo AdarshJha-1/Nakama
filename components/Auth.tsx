@@ -1,7 +1,7 @@
 "use client"
 
 import { DarkModeToggle } from './DarkModeToggle'
-import UserProfile from './UserProfile'
+import UserProfile from './users/UserProfile'
 import { useSession } from '@/app/(main)/SessionProvider'
 
 export default function Auth() {
@@ -14,4 +14,3 @@ export default function Auth() {
         </div>
     )
 }
-

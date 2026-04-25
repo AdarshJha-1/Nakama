@@ -1,12 +1,12 @@
 "use client"
 
-import { PostDTO } from "@/lib/types"
-import UserProfile from "../UserProfile"
-import Link from "next/link"
-import { formatDate } from "@/lib/date-format";
-import { Bookmark, Dot, Heart, MessageCircleIcon } from "lucide-react";
 import Image from "next/image";
-import PostMore from "../PostMore";
+import { Bookmark, Dot, Heart, MessageCircleIcon } from "lucide-react";
+import Link from "next/link"
+
+import PostMore from "./PostMore";
+import { PostDTO } from "@/lib/types"
+import { formatDate } from "@/lib/date-format";
 import { useRouter } from "next/navigation";
 import { useSession } from "@/app/(main)/SessionProvider";
 
@@ -24,7 +24,9 @@ export default function PostCard({ post }: { post: PostDTO }) {
     return (
         <div className="min-h-28 bg-card flex items-start gap-3 rounded-2xl px-5 py-3 text-sm">
             <div className="shrink-0">
-                <UserProfile user={{ image: post.author.image, name: post.author.name, username: post.author.username }} />
+                <Link href={`/users/${post.author.username}`} className="">
+                    <Image className="rounded-full aspect-square flex-none object-cover h-fit" src={post.author.image as string} width={50} height={50} alt="avatar" />
+                </Link>
             </div>
             <div className="w-full flex gap-2 flex-col">
                 <div className="flex items-center justify-start">
@@ -42,7 +44,7 @@ export default function PostCard({ post }: { post: PostDTO }) {
                 <div className="rounded-2xl  overflow-hidden ">
                     <div className="relative w-full aspect-square max-w-2/4">
                         <Image
-                            src="https://i.pinimg.com/1200x/3f/7a/04/3f7a0468e08dd5e6dba955a2272c8b73.jpg"
+                            src="https://i.pinimg.com/736x/ce/bc/5a/cebc5ae1a5dc66e170449765a4458503.jpg"
                             alt="post-image"
                             fill
                             className="object-cover rounded-2xl"
