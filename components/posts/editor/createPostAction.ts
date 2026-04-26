@@ -1,7 +1,7 @@
 "use server"
 
 import { db } from "@/db/drizzle"
-import { userOfPost } from "@/db/helper"
+import { userFromDB } from "@/db/helper"
 import { bookmarks, comments, likes, post, user } from "@/db/schema"
 import { getServerSession } from "@/lib/getServerSession"
 import { PostDTO } from "@/lib/types"
@@ -27,7 +27,7 @@ export const createPostAction = async (input: string): Promise<PostDTO> => {
         content: post.content,
         createdAt: post.createdAt,
 
-        author: userOfPost(session.user.id),
+        author: userFromDB(session.user.id),
         isLiked: sql<boolean>`
                 EXISTS (
                     SELECT 1 FROM ${likes}

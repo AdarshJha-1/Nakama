@@ -2,14 +2,16 @@ import FollowButton from '@/components/FollowButton'
 import ShowFollowerCount from '@/components/FollowerCount'
 import UserPosts from '@/components/users/UserPost'
 import { db } from '@/db/drizzle'
-import { follow, post, user } from '@/db/schema'
+import { user } from '@/db/schema'
 import { getServerSession } from '@/lib/getServerSession'
-import { eq, sql } from 'drizzle-orm'
+import { eq } from 'drizzle-orm'
 import { Metadata } from 'next'
 import Image from 'next/image'
 import { notFound, redirect } from 'next/navigation'
 import { cache } from 'react'
 import { EditButton } from './EditButton'
+import { userFromDB } from '@/db/helper'
+import { UserDTO } from '@/lib/types'
 
 interface PageProps {
     params: Promise<{
@@ -17,30 +19,10 @@ interface PageProps {
     }>;
 }
 
-const getUser = cache(async (username: string, loggedInUserId: string) => {
+const getUser = cache(async (username: string, loggedInUserId: string): Promise<UserDTO> => {
     const [profileUser] = await db.select(
         {
-            id: user.id,
-            name: user.name,
-            username: user.username,
-            image: user.image,
-            createdAt: user.createdAt,
-            isFollowing: sql<boolean>`
-                EXISTS (
-                SELECT 1 
-                FROM ${follow}
-                WHERE ${follow.followerId} = ${loggedInUserId}
-                AND ${follow.followingId} = ${user.id})`,
-            followerCount: sql<number>`(
-                SELECT COUNT(*)::int
-                FROM ${follow}
-                WHERE ${follow.followingId} = ${user.id}
-            )`,
-            postsCount: sql<number>`(
-                SELECT COUNT(*)::int
-                FROM ${post}
-                WHERE ${post.userId} = ${user.id}
-            )`,
+            ...userFromDB(loggedInUserId)
         }
     ).from(user).where(eq(user.username, username)).limit(1)
 
@@ -75,8 +57,9 @@ export default async function Page({ params }: PageProps) {
 
 
     const profileUser = await getUser(decUsername, session.user.id)
-    console.log(profileUser.followerCount, profileUser.isFollowing);
-
+    if (!profileUser) {
+        redirect("/")
+    }
 
     const joinedDate = new Date(profileUser.createdAt).toLocaleDateString("en-GB", {
         day: "2-digit",
@@ -95,18 +78,18 @@ export default async function Page({ params }: PageProps) {
                             <span className='text-muted-foreground font-light text-sm'>@{profileUser.username}</span>
                         </div>
                         {
-                            profileUser.id !== session.user.id && <FollowButton userId={profileUser.id} initialState={{ followers: profileUser.followerCount, isFollowedByUser: profileUser.isFollowing }} />
+                            profileUser.id !== session.user.id && <FollowButton userId={profileUser.id} initialState={{ followers: profileUser.followerCount, isFollowedByUser: profileUser.isFollowed }} />
                         }
                         {
-                            profileUser.id === session.user.id && <EditButton name={profileUser.name} />
+                            profileUser.id === session.user.id && <EditButton user={profileUser} />
                         }
                     </div>
                     <div className="font-light py-2 text-sm">
                         <span> Member since {joinedDate}</span>
                     </div>
                     <div className="flex gap-2 font-light py-2 text-sm">
-                        <span>Posts: {profileUser.postsCount}</span>
-                        <ShowFollowerCount userId={profileUser.id} initialState={{ followers: profileUser.followerCount, isFollowedByUser: profileUser.isFollowing }} />
+                        <span>Posts: {profileUser.postCount}</span>
+                        <ShowFollowerCount userId={profileUser.id} initialState={{ followers: profileUser.followerCount, isFollowedByUser: profileUser.isFollowed }} />
                     </div>
                 </div>
                 <div className="rounded-2xl bg-card p-5 shadow-sm">

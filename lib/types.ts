@@ -7,13 +7,14 @@ export type UserDTO = {
     id: string;
     name: string;
     username: string;
-    image?: string | null | undefined;
+    image: string | null;
     createdAt: Date;
 
     isFollowed: boolean;
     followerCount: number;
     postCount: number;
 };
+
 export type PostDTO = {
     id: string;
     content: string;
