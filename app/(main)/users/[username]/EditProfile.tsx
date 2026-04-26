@@ -143,7 +143,7 @@ function AvatarInput({ onImageCrop, src }: AvatarInputProps) {
                 <CropImage
                     src={URL.createObjectURL(imageToCrop)}
                     onCropped={onImageCrop}
-                    cropAspectRation={1}
+                    cropAspectRatio={1}
                     onClose={() => {
                         setImageToCrop(undefined)
                         if (ref.current) {

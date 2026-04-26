@@ -7,11 +7,11 @@ import { Button } from "./ui/button";
 
 interface CropImageProps {
     src: string;
-    cropAspectRation: number;
+    cropAspectRatio: number;
     onCropped: (blob: Blob | null) => void
     onClose: () => void
 }
-export default function CropImage({ cropAspectRation, onClose, onCropped, src }: CropImageProps) {
+export default function CropImage({ cropAspectRatio, onClose, onCropped, src }: CropImageProps) {
 
     const cropperRef = useRef<ReactCropperElement>(null);
     const onCrop = () => {
@@ -29,17 +29,17 @@ export default function CropImage({ cropAspectRation, onClose, onCropped, src }:
                 </DialogHeader>
                 <Cropper
                     src={src}
-                    initialAspectRatio={cropAspectRation}
+                    aspectRatio={cropAspectRatio}
                     guides={false}
                     zoomable={false}
                     ref={cropperRef}
-                    className="mx-auto size-fit"
+                    className="w-full h-full"
                 />
                 <DialogFooter>
                     <Button variant={"secondary"} onClick={onClose}>Cancel</Button>
                     <Button onClick={onCrop}>Crop</Button>
                 </DialogFooter>
             </DialogContent>
-        </Dialog>
+        </Dialog >
     );
 }
