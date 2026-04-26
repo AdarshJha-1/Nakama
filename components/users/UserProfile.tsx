@@ -30,7 +30,6 @@ interface UserProfileProps {
         username: string
     }
 }
-// TODO fix this make it for all the things
 export default function UserProfile({ user }: UserProfileProps) {
     const client = useQueryClient()
     const router = useRouter()

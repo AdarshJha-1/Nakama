@@ -6,7 +6,6 @@ import { updateUserProfile } from "./action";
 import { useRouter } from "next/navigation";
 import { PostPage } from "@/lib/types";
 
-
 export function useUpdateProfileMutation() {
 
     const router = useRouter()

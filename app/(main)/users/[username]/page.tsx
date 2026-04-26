@@ -1,12 +1,14 @@
+import Image from 'next/image'
+
 import FollowButton from '@/components/FollowButton'
 import ShowFollowerCount from '@/components/FollowerCount'
 import UserPosts from '@/components/users/UserPost'
+
 import { db } from '@/db/drizzle'
 import { user } from '@/db/schema'
 import { getServerSession } from '@/lib/getServerSession'
 import { eq } from 'drizzle-orm'
 import { Metadata } from 'next'
-import Image from 'next/image'
 import { notFound, redirect } from 'next/navigation'
 import { cache } from 'react'
 import { EditButton } from './EditButton'

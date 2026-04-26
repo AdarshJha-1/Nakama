@@ -83,9 +83,9 @@ export async function GET(req: NextRequest) {
             createdAt: p.author.createdAt,
 
 
-            isFollowed: p.author.isFollowing,
+            isFollowed: p.author.isFollowed,
             followerCount: Number(p.author.followerCount),
-            postCount: Number(p.author.postsCount),
+            postCount: Number(p.author.postCount),
 
         },
         isLiked: p.isLiked,
