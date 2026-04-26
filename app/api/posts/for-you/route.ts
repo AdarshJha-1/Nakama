@@ -59,8 +59,7 @@ export async function GET(req: NextRequest) {
         .from(post).innerJoin(user, eq(user.id, post.userId))
         .where(cursor ? lt(post.id, cursor) : undefined)
         .limit(pageSize + 1)
-        .orderBy(desc(post.id))
-
+        .orderBy(desc(post.id)) // TODO fix this using createdAt + id based cursor in all the get post api endpoint
 
 
     const hasMore = rawPosts.length > pageSize;
