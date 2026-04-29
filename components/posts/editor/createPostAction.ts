@@ -2,25 +2,31 @@
 
 import { db } from "@/db/drizzle"
 import { userFromDB } from "@/db/helper"
-import { bookmarks, comments, likes, post, user } from "@/db/schema"
+import { bookmarks, comments, likes, media, post, user } from "@/db/schema"
 import { getServerSession } from "@/lib/getServerSession"
 import { PostDTO } from "@/lib/types"
 import { createPostSchema } from "@/lib/validation"
-import { eq, sql } from "drizzle-orm"
+import { eq, inArray, sql } from "drizzle-orm"
 import { nanoid } from "nanoid"
 
-export const createPostAction = async (input: string): Promise<PostDTO> => {
+export const createPostAction = async (input: {
+    content: string,
+    mediaIds: string[]
+}): Promise<PostDTO> => {
 
     const session = await getServerSession()
     if (!session) throw new Error("Unauthorized")
 
-    const { content } = createPostSchema.parse({ content: input })
+    const { content, mediaIds } = createPostSchema.parse(input)
 
     const [newPost] = await db.insert(post)
         .values(
             { content, userId: session.user.id, id: nanoid() })
         .returning()
 
+    if (mediaIds.length > 0) {
+        await db.update(media).set({ postId: newPost.id }).where(inArray(media.id, mediaIds))
+    }
 
     const [p] = await db.select({
         id: post.id,
