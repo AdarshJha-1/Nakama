@@ -35,3 +35,8 @@ export interface PostPage {
     posts: PostDTO[];
     nextCursor: string | null;
 }
+
+export interface LikeInfo {
+    likes: number;
+    isLikedByUser: boolean
+}

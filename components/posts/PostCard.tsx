@@ -9,6 +9,7 @@ import { PostDTO } from "@/lib/types"
 import { formatDate } from "@/lib/date-format";
 import { useRouter } from "next/navigation";
 import { useSession } from "@/app/(main)/SessionProvider";
+import LikeButton from "../LikeButton";
 
 export default function PostCard({ post }: { post: PostDTO }) {
 
@@ -55,9 +56,7 @@ export default function PostCard({ post }: { post: PostDTO }) {
                     <div className="flex gap-1">
                         <MessageCircleIcon /> {post.commentCount}
                     </div>
-                    <div className="flex gap-1">
-                        <Heart /> {post.likeCount}
-                    </div>
+                    <LikeButton postId={post.id} initialState={{ likes: post.likeCount, isLikedByUser: post.isLiked }} />
                     <div className="flex gap-1">
                         <Bookmark /> {post.bookmarkCount}
                     </div>
