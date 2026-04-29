@@ -1,7 +1,7 @@
 "use client"
 
 import Image from "next/image";
-import { Dot, MessageCircleIcon } from "lucide-react";
+import { MessageCircleIcon } from "lucide-react";
 import Link from "next/link"
 
 import PostMore from "./PostMore";
@@ -51,7 +51,6 @@ export default function PostCard({ post }: { post: PostDTO }) {
                 <div className="h-fit text-wrap">
                     {post.content}
                 </div>
-                {/* Here i will have some media attached to the post if any: This is for an example*/}
                 <div className="rounded-2xl  overflow-hidden ">
                     <div className="relative w-full aspect-square max-w-2/4">
                         <Image
@@ -71,9 +70,6 @@ export default function PostCard({ post }: { post: PostDTO }) {
                         </div>
                     </div>
                     <BookmarkButton postId={post.id} initialState={{ bookmarks: post.bookmarkCount, isBookmarkedByUser: post.isBookmarked }} />
-                    {/* {
-                        post.author.id === session?.userId && <PostMore id={post.id} />
-                    } */}
                 </div>
             </div>
         </div >
