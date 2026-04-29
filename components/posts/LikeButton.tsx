@@ -63,8 +63,8 @@ export default function LikeButton({ postId, initialState }: PostLikesProps) {
 
 
     return (
-        <button onClick={() => mutate()} className="flex items-center gap-2 cursor-pointer ">
-            <Heart className={cn("size-5 transition-all duration-200", data.isLikedByUser && "fill-red-500 text-red-500")} /> {data.likes}
+        <button onClick={() => mutate()} className="flex items-center justify-center space-x-2 cursor-pointer text-muted-foreground">
+            <Heart className={cn("size-5 transition-all duration-200", data.isLikedByUser && "fill-red-500 text-red-500")} /> <span className='text-sm font-medium'>{data.likes} Likes</span>
         </button>
     )
 }
