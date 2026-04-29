@@ -2,7 +2,7 @@ import { db } from "@/db/drizzle";
 import { likes } from "@/db/schema";
 import { getServerSession } from "@/lib/getServerSession";
 import { LikeInfo } from "@/lib/types";
-import { and, count, eq } from "drizzle-orm";
+import { and, count, eq, sql } from "drizzle-orm";
 import { NextRequest } from "next/server";
 
 export async function GET(req: NextRequest, { params }: { params: Promise<{ postId: string }> }
@@ -18,16 +18,28 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ post
     console.log("for likes details");
     const { postId } = await params;
     const decPostId = decodeURIComponent(postId)
-    const likeCount = await db.select({
-        count: count(),
-    }).from(likes).where(eq(likes.postId, decPostId))
+    const dbRes = await db.execute(sql`
+        SELECT 
+        (
+        SELECT COUNT(*)
+        FROM ${likes}
+        WHERE ${likes.postId} = ${decPostId}
+        ) AS likes,
 
-    const isLikedByUser = await db.select().from(likes).where(eq(likes.userId, session.user.id))
+        EXISTS (
+        SELECT 1 
+        FROM ${likes}
+        WHERE ${likes.postId} = ${decPostId}
+        AND ${likes.userId} = ${session.user.id}
+        ) AS isLiked
+`);
+
+    const row = dbRes.rows[0];
 
     const data: LikeInfo = {
-        likes: likeCount.length,
-        isLikedByUser: !!isLikedByUser
-    }
+        likes: Number(row?.likes ?? 0),
+        isLikedByUser: row?.isLiked === true,
+    };
 
     console.log(data);
 
