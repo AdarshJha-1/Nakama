@@ -16,8 +16,8 @@ export default function FollowButton({ userId, initialState }: FollowButtonProps
     const queryClient = useQueryClient()
 
     const { mutate, isPending } = useMutation({
-        mutationFn: async ({ isFollowing }: { isFollowing: boolean }) => {
-            if (isFollowing) {
+        mutationFn: async () => {
+            if (data.isFollowedByUser) {
                 const res = await fetch(`/api/users/${userId}/followers`, {
                     method: "DELETE"
                 })
@@ -32,21 +32,16 @@ export default function FollowButton({ userId, initialState }: FollowButtonProps
                 return res.json()
             }
         },
-        onMutate: async ({ isFollowing }) => {
+        onMutate: async () => {
             const queryKey: QueryKey = ["follower-info", userId]
             await queryClient.cancelQueries({ queryKey })
             const prevState = queryClient.getQueryData<FollowerInfo>(queryKey)
             if (!prevState) return { prevState }
             queryClient.setQueryData<FollowerInfo>(queryKey, () => ({
-                followers: isFollowing ? prevState.followers - 1 : prevState.followers + 1,
+                followers: (prevState.followers || 0) + (prevState?.isFollowedByUser ? -1 : 1),
                 isFollowedByUser: !prevState.isFollowedByUser
             }))
             return { prevState }
-        },
-        onSuccess: () => {
-            queryClient.invalidateQueries({
-                queryKey: ["follower-info", userId],
-            });
         },
         onError(error, variables, context) {
             const queryKey: QueryKey = ["follower-info", userId]
@@ -56,7 +51,7 @@ export default function FollowButton({ userId, initialState }: FollowButtonProps
     return (
         <Button
             disabled={isPending}
-            onClick={() => mutate({ isFollowing: data.isFollowedByUser })}
+            onClick={() => mutate()}
             variant={data.isFollowedByUser ? "secondary" : "default"}
         >
             {data.isFollowedByUser ? "Unfollow" : "Follow"}
