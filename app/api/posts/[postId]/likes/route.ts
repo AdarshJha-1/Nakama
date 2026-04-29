@@ -2,7 +2,7 @@ import { db } from "@/db/drizzle";
 import { likes } from "@/db/schema";
 import { getServerSession } from "@/lib/getServerSession";
 import { LikeInfo } from "@/lib/types";
-import { and, count, eq, sql } from "drizzle-orm";
+import { and, eq, sql } from "drizzle-orm";
 import { NextRequest } from "next/server";
 
 export async function GET(req: NextRequest, { params }: { params: Promise<{ postId: string }> }
