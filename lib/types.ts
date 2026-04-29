@@ -1,8 +1,3 @@
-export interface FollowerInfo {
-    followers: number;
-    isFollowedByUser: boolean;
-}
-
 export type UserDTO = {
     id: string;
     name: string;
@@ -30,6 +25,10 @@ export type PostDTO = {
     bookmarkCount: number;
 };
 
+export interface FollowerInfo {
+    followers: number;
+    isFollowedByUser: boolean;
+}
 
 export interface PostPage {
     posts: PostDTO[];
@@ -39,4 +38,9 @@ export interface PostPage {
 export interface LikeInfo {
     likes: number;
     isLikedByUser: boolean
+}
+
+export interface BookmarkInfo {
+    bookmarks: number;
+    isBookmarkedByUser: boolean
 }

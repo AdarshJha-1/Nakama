@@ -10,10 +10,10 @@ import { PostDTO } from "@/lib/types";
 export default function FollowingPage() {
 
     const { data, fetchNextPage, hasNextPage, isFetching, status, isFetchingNextPage } = useInfiniteQuery({
-        queryKey: ["post-feed", "for-you"],
+        queryKey: ["post-feed", "following"],
         queryFn: async ({ pageParam }) => {
             const searchParam = new URLSearchParams()
-            if (pageParam) searchParam.append("cursor", pageParam)
+            if (pageParam) searchParam.append("cursor", encodeURIComponent(pageParam))
             const res = await fetch(`/api/posts/following?${searchParam}`)
             if (!res.ok) {
                 throw new Error("failed to fetch posts");
@@ -24,7 +24,7 @@ export default function FollowingPage() {
         getNextPageParam: (lastPage) => lastPage.nextCursor
     })
 
-    const post = data?.pages.flatMap(page => page.posts) || []
+    const posts = data?.pages.flatMap(page => page.posts) || []
 
     if (status === "pending") {
         return (
@@ -36,8 +36,8 @@ export default function FollowingPage() {
         )
     }
 
-    if (status === "success" && !hasNextPage && !post.length) {
-        return <p className="text-center my-5 text-muted-foreground">No has posted anything</p>
+    if (status === "success" && !hasNextPage && !posts.length) {
+        return <p className="text-center my-5 text-muted-foreground">No posts yet.</p>
     }
 
     if (status === "error") {
@@ -49,8 +49,8 @@ export default function FollowingPage() {
             hasNextPage && !isFetching && fetchNextPage()
         }}>
             {
-                post.map((post: PostDTO, i: number) => (
-                    <PostCard key={i} post={post} />
+                posts.map((post: PostDTO, i: number) => (
+                    <PostCard key={post.id} post={post} />
                 ))
             }
             {

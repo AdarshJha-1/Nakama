@@ -1,7 +1,7 @@
 "use client"
 
 import Image from "next/image";
-import { Bookmark, Dot, Heart, MessageCircleIcon } from "lucide-react";
+import { Dot, MessageCircleIcon } from "lucide-react";
 import Link from "next/link"
 
 import PostMore from "./PostMore";
@@ -9,7 +9,8 @@ import { PostDTO } from "@/lib/types"
 import { formatDate } from "@/lib/date-format";
 import { useRouter } from "next/navigation";
 import { useSession } from "@/app/(main)/SessionProvider";
-import LikeButton from "../LikeButton";
+import LikeButton from "./LikeButton";
+import BookmarkButton from "./BookmarkButton";
 
 export default function PostCard({ post }: { post: PostDTO }) {
 
@@ -57,9 +58,7 @@ export default function PostCard({ post }: { post: PostDTO }) {
                         <MessageCircleIcon /> {post.commentCount}
                     </div>
                     <LikeButton postId={post.id} initialState={{ likes: post.likeCount, isLikedByUser: post.isLiked }} />
-                    <div className="flex gap-1">
-                        <Bookmark /> {post.bookmarkCount}
-                    </div>
+                    <BookmarkButton postId={post.id} initialState={{ bookmarks: post.bookmarkCount, isBookmarkedByUser: post.isBookmarked }} />
                     {
                         post.author.id === session?.userId && <PostMore id={post.id} />
                     }

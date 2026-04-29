@@ -2,24 +2,24 @@
 
 import { useInfiniteQuery } from "@tanstack/react-query"
 import { Loader2 } from "lucide-react";
-import PostCard from "./posts/PostCard";
-import InfiniteLoading from "./InfiniteLoading";
-import PostCardSkeleton from "./posts/PostCardSkeleton";
 import { PostDTO, PostPage } from "@/lib/types";
+import InfiniteLoading from "@/components/InfiniteLoading";
+import PostCard from "@/components/posts/PostCard";
+import PostCardSkeleton from "@/components/posts/PostCardSkeleton";
 
-export default function ForYouPage() {
+export default function Bookmarks() {
 
     const { data, fetchNextPage, hasNextPage, isFetching, status, isFetchingNextPage } = useInfiniteQuery({
-        queryKey: ["post-feed", "for-you"],
+        queryKey: ["post-feed", "bookmarks"],
         queryFn: async ({ pageParam }) => {
             const searchParam = new URLSearchParams()
             if (pageParam) searchParam.append("cursor", encodeURIComponent(pageParam))
-            const res = await fetch(`/api/posts/for-you?${searchParam}`)
+            const res = await fetch(`/api/posts/bookmarked?${searchParam}`)
             if (!res.ok) {
                 throw new Error("failed to fetch posts");
             }
-            const data: PostPage = await res.json();
-            return data;
+            const data: PostPage = await res.json()
+            return data
         },
         initialPageParam: null as string | null,
         getNextPageParam: (lastPage) => lastPage.nextCursor
@@ -38,7 +38,7 @@ export default function ForYouPage() {
     }
 
     if (status === "success" && !hasNextPage && !posts.length) {
-        return <p className="text-center my-5 text-muted-foreground">No posts yet.</p>
+        return <p className="text-center my-5 text-muted-foreground">No bookmarked posts yet.</p>
     }
 
     if (status === "error") {
@@ -50,7 +50,7 @@ export default function ForYouPage() {
             hasNextPage && !isFetching && fetchNextPage()
         }}>
             {
-                posts.map((post: PostDTO, i: number) => (
+                posts.map((post: PostDTO) => (
                     <PostCard key={post.id} post={post} />
                 ))
             }

@@ -1,6 +1,6 @@
 import { db } from "@/db/drizzle";
-import { followingCondition, userFromDB } from "@/db/helper";
-import { bookmarks, comments, follow, likes, post, user } from "@/db/schema";
+import { userFromDB } from "@/db/helper";
+import { bookmarks, comments, likes, post, user } from "@/db/schema";
 import { getServerSession } from "@/lib/getServerSession";
 import { PostDTO, PostPage } from "@/lib/types";
 import { and, desc, eq, lt, or, sql, } from "drizzle-orm";
@@ -18,6 +18,7 @@ export async function GET(req: NextRequest) {
     const pageSize = 10;
     const rawCursor = req.nextUrl.searchParams.get("cursor");
     const parsedCursor = rawCursor ? JSON.parse(decodeURIComponent(rawCursor)) : null;
+
     const rawPosts = await db
         .select({
             id: post.id,
@@ -32,13 +33,7 @@ export async function GET(req: NextRequest) {
                     AND ${likes.userId} = ${session.user.id}
                 )
                 `,
-            isBookmarked: sql<boolean>`
-                EXISTS (
-                    SELECT 1 FROM ${bookmarks}
-                    WHERE ${bookmarks.postId} = ${post.id}
-                    AND ${bookmarks.userId} = ${session.user.id}
-                )
-                `,
+            isBookmarked: sql<boolean>`true`,
             likeCount: sql<number>`(
                 SELECT COUNT(*)::int 
                 FROM ${likes} 
@@ -56,33 +51,32 @@ export async function GET(req: NextRequest) {
                 WHERE ${comments.postId} = ${post.id})`
                 .as("comment_count"),
         })
-        .from(post).innerJoin(user, eq(user.id, post.userId))
+        .from(bookmarks)
+        .innerJoin(post, eq(post.id, bookmarks.postId))
+        .innerJoin(user, eq(user.id, post.userId))
         .where(
             parsedCursor
                 ? and(
+                    eq(bookmarks.userId, session.user.id),
                     or(
-                        lt(post.createdAt, new Date(parsedCursor.createdAt)),
+                        lt(bookmarks.createdAt, new Date(parsedCursor.createdAt)),
                         and(
-                            eq(post.createdAt, new Date(parsedCursor.createdAt)),
+                            eq(bookmarks.createdAt, new Date(parsedCursor.createdAt)),
                             lt(post.id, parsedCursor.id)
                         )
-                    ),
-                    followingCondition(session.user.id)
+                    )
                 )
-                : followingCondition(session.user.id)
-        )
+
+                : eq(bookmarks.userId, session.user.id))
         .limit(pageSize + 1)
-        .orderBy(desc(post.createdAt), desc(post.id))
-
-
+        .orderBy(desc(bookmarks.createdAt), desc(bookmarks.postId))
 
     const hasMore = rawPosts.length > pageSize;
     const postsToReturn = hasMore ? rawPosts.slice(0, pageSize) : rawPosts;
 
     const nextCursor =
         hasMore && postsToReturn.length > 0
-            ?
-            JSON.stringify({
+            ? JSON.stringify({
                 createdAt: postsToReturn[postsToReturn.length - 1].createdAt,
                 id: postsToReturn[postsToReturn.length - 1].id,
             })

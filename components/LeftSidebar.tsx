@@ -8,8 +8,8 @@ export default function LeftSidebar({ className }: { className?: string }) {
         <header className={`flex flex-col gap-2 bg-card border shadow w-fit md:w-44 lg:w-52 justify-center items-start px-3 h-52 rounded-2xl transition ease-in ${className}`}>
             <SidebarButton buttonName="Home" buttonIcon={<Home />} buttonPath="/" />
             <SidebarButton buttonName="Search" buttonIcon={<Search />} buttonPath="search" />
-            <SidebarButton buttonName="Notification" buttonIcon={<Bell />} buttonPath="notification" />
-            <SidebarButton buttonName="Bookmarks" buttonIcon={<Book />} buttonPath="bookmark" />
+            <SidebarButton buttonName="Notification" buttonIcon={<Bell />} buttonPath="notifications" />
+            <SidebarButton buttonName="Bookmarks" buttonIcon={<Book />} buttonPath="bookmarks" />
         </header>
     )
 }

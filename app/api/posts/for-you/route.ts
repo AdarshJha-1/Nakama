@@ -3,7 +3,7 @@ import { userFromDB } from "@/db/helper";
 import { bookmarks, comments, likes, post, user } from "@/db/schema";
 import { getServerSession } from "@/lib/getServerSession";
 import { PostDTO, PostPage } from "@/lib/types";
-import { desc, eq, lt, sql, } from "drizzle-orm";
+import { and, desc, eq, lt, or, sql, } from "drizzle-orm";
 import { NextRequest } from "next/server";
 
 export async function GET(req: NextRequest) {
@@ -16,7 +16,9 @@ export async function GET(req: NextRequest) {
     }
 
     const pageSize = 10;
-    const cursor = req.nextUrl.searchParams.get("cursor") || undefined
+    const rawCursor = req.nextUrl.searchParams.get("cursor");
+    const parsedCursor = rawCursor ? JSON.parse(decodeURIComponent(rawCursor)) : null;
+
     const rawPosts = await db
         .select({
             id: post.id,
@@ -57,9 +59,19 @@ export async function GET(req: NextRequest) {
                 .as("comment_count"),
         })
         .from(post).innerJoin(user, eq(user.id, post.userId))
-        .where(cursor ? lt(post.id, cursor) : undefined)
+        .where(
+            parsedCursor
+                ? or(
+                    lt(post.createdAt, new Date(parsedCursor.createdAt)),
+                    and(
+                        eq(post.createdAt, new Date(parsedCursor.createdAt)),
+                        lt(post.id, parsedCursor.id)
+                    )
+                )
+                : undefined
+        )
         .limit(pageSize + 1)
-        .orderBy(desc(post.id)) // TODO fix this using createdAt + id based cursor in all the get post api endpoint
+        .orderBy(desc(post.createdAt), desc(post.id))
 
 
     const hasMore = rawPosts.length > pageSize;
@@ -67,7 +79,11 @@ export async function GET(req: NextRequest) {
 
     const nextCursor =
         hasMore && postsToReturn.length > 0
-            ? postsToReturn[postsToReturn.length - 1].id
+            ?
+            JSON.stringify({
+                createdAt: postsToReturn[postsToReturn.length - 1].createdAt,
+                id: postsToReturn[postsToReturn.length - 1].id,
+            })
             : null;
 
     const formattedPosts: PostDTO[] = postsToReturn.map(p => ({

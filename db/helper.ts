@@ -27,3 +27,13 @@ export function userFromDB(loggedInUserId: string) {
             )`,
     }
 }
+
+export function followingCondition(loggedInUser: string) {
+    return sql`
+        EXISTS (
+            SELECT 1 
+            FROM ${follow}
+            WHERE ${follow.followerId} = ${loggedInUser}
+            AND ${follow.followingId} = ${post.userId}
+        )`;
+}
