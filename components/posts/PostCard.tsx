@@ -13,6 +13,7 @@ import BookmarkButton from "./BookmarkButton";
 import { Separator } from "../ui/separator";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
+import CommentButton from "./CommentsButton";
 
 export default function PostCard({ post }: { post: PostDTO }) {
     const [activeMedia, setActiveMedia] = useState<Media | null>(null);
@@ -81,11 +82,7 @@ export default function PostCard({ post }: { post: PostDTO }) {
                             isLikedByUser: post.isLiked,
                         }}
                     />
-
-                    <div className="flex items-center gap-2 text-sm">
-                        <MessageCircleIcon className="size-4" />
-                        {post.commentCount}
-                    </div>
+                    <CommentButton count={post.commentCount} />
                 </div>
 
                 <BookmarkButton

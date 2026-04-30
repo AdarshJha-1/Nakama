@@ -59,12 +59,37 @@ export default function BookmarkButton({ postId, initialState }: BookmarkButtonP
     })
 
     return (
-        <button onClick={(e) => {
-            e.stopPropagation()
-            mutate()
-        }} className="flex items-center gap-2 cursor-pointer ">
-            <Bookmark className={cn("size-5 transition-all duration-200 hover:text-blue-400", data.isBookmarkedByUser && "fill-blue-400 text-blue-400")} />
-            <span className='text-sm font-medium'>
+        <button
+            onClick={(e) => {
+                e.stopPropagation();
+                mutate();
+            }}
+            className={cn(
+                "group flex items-center gap-1 cursor-pointer text-sm transition-colors duration-200",
+                data.isBookmarkedByUser
+                    ? "text-blue-500"
+                    : "text-muted-foreground"
+            )}
+        >
+            <span className="relative flex items-center justify-center">
+                <span className="absolute size-8 rounded-full scale-0 opacity-0 transition-all duration-200 group-hover:scale-100 group-hover:opacity-100 bg-blue-500/10" />
+                <Bookmark
+                    className={cn(
+                        "relative z-10 size-4 transition-colors duration-200",
+                        data.isBookmarkedByUser
+                            ? "fill-blue-500 text-blue-500"
+                            : "group-hover:text-blue-500"
+                    )}
+                />
+            </span>
+            <span
+                className={cn(
+                    "font-medium transition-colors duration-200",
+                    data.isBookmarkedByUser
+                        ? "text-blue-500"
+                        : "group-hover:text-blue-500"
+                )}
+            >
                 {data.bookmarks}
             </span>
         </button>

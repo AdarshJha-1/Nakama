@@ -1,6 +1,6 @@
 import { LikeInfo } from '@/lib/types';
 import { QueryKey, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { Heart } from 'lucide-react';
+import { Heart, HeartIcon, HeartPlus } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface PostLikesProps {
@@ -63,11 +63,39 @@ export default function LikeButton({ postId, initialState }: PostLikesProps) {
 
 
     return (
-        <button onClick={(e) => {
-            e.stopPropagation()
-            mutate()
-        }} className="flex items-center justify-center space-x-2 cursor-pointer text-muted-foreground">
-            <Heart className={cn("size-5 transition-all duration-200", data.isLikedByUser && "fill-red-500 text-red-500")} /> <span className='text-sm font-medium'>{data.likes} Likes</span>
+        <button
+            onClick={(e) => {
+                e.stopPropagation();
+                mutate();
+            }}
+            className={cn(
+                "group flex items-center gap-1 text-sm transition-colors duration-200",
+                data.isLikedByUser
+                    ? "text-pink-500"
+                    : "text-muted-foreground"
+            )}
+        >
+            <span className="relative flex items-center justify-center">
+                <span className="absolute size-8 rounded-full scale-0 opacity-0 transition-all duration-200 group-hover:scale-100 group-hover:opacity-100 bg-pink-500/10" />
+                <Heart
+                    className={cn(
+                        "relative z-10 size-4 transition-colors duration-200",
+                        data.isLikedByUser
+                            ? "fill-pink-500 text-pink-500"
+                            : "group-hover:text-pink-500"
+                    )}
+                />
+            </span>
+            <span
+                className={cn(
+                    "transition-colors duration-200",
+                    data.isLikedByUser
+                        ? "text-pink-500"
+                        : "group-hover:text-pink-500"
+                )}
+            >
+                {data.likes}
+            </span>
         </button>
     )
 }
