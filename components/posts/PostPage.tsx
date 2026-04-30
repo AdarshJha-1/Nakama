@@ -14,8 +14,8 @@ export default function PostPage() {
             <div className="w-full ">
                 <Tabs defaultValue="for-you" className="w-full">
                     <TabsList className="w-full bg-card">
-                        <TabsTrigger value="for-you">For You</TabsTrigger>
-                        <TabsTrigger value="following">Following</TabsTrigger>
+                        <TabsTrigger value="for-you" className="cursor-pointer">For You</TabsTrigger>
+                        <TabsTrigger value="following" className="cursor-pointer">Following</TabsTrigger>
                     </TabsList>
                     <TabsContent value="for-you">
                         <ForYouPage />
