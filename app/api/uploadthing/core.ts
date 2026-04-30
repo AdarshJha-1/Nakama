@@ -1,4 +1,3 @@
-import { metadata } from "@/app/layout";
 import { db } from "@/db/drizzle";
 import { media, user } from "@/db/schema";
 import { getServerSession } from "@/lib/getServerSession";
@@ -38,8 +37,8 @@ export const fileRouter = {
             return { image: newAvtarUrl }
         }),
     attachment: f({
-        image: { maxFileSize: "4MB", maxFileCount: 5 },
-        video: { maxFileSize: "64MB", maxFileCount: 5 },
+        image: { maxFileSize: "4MB", maxFileCount: 4 },
+        video: { maxFileSize: "64MB", maxFileCount: 4 },
 
     })
         .middleware(async () => {
@@ -51,7 +50,7 @@ export const fileRouter = {
         })
         .onUploadComplete(async ({ file }) => {
 
-            const mediaId = db.insert(media).values({
+            const [res] = await db.insert(media).values({
                 id: nanoid(),
                 url: file.url.replace(
                     "/f/",
@@ -60,7 +59,7 @@ export const fileRouter = {
                 type: file.type.startsWith("image") ? "IMAGE" : "VIDEO"
             }).returning({ id: media.id })
 
-            return { mediaId: mediaId }
+            return { mediaId: res.id }
         })
 } satisfies FileRouter
 

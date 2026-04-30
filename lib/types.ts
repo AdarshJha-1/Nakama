@@ -16,7 +16,7 @@ export type PostDTO = {
     createdAt: Date;
 
     author: UserDTO;
-
+    media: Media[];
     isLiked: boolean;
     isBookmarked: boolean;
 
@@ -24,6 +24,15 @@ export type PostDTO = {
     commentCount: number;
     bookmarkCount: number;
 };
+
+export type MEDIA = "IMAGE" | "VIDEO"
+
+
+export type Media = {
+    id: string
+    url: string
+    type: MEDIA
+}
 
 export interface FollowerInfo {
     followers: number;

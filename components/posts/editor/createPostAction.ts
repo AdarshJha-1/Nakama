@@ -69,6 +69,12 @@ export const createPostAction = async (input: {
         .where(eq(post.id, newPost.id))
         .limit(1)
 
+    const medias = await db.select({
+        id: media.id,
+        url: media.url,
+        type: media.type
+    }).from(media).where(eq(media.postId, newPost.id))
+
     const data: PostDTO = {
         id: p.id,
         content: p.content,
@@ -86,6 +92,7 @@ export const createPostAction = async (input: {
             postCount: Number(p.author.postCount),
 
         },
+        media: medias,
         isLiked: p.isLiked,
         isBookmarked: p.isBookmarked,
         likeCount: Number(p.likeCount) ?? 0,

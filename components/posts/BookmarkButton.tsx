@@ -23,8 +23,6 @@ export default function BookmarkButton({ postId, initialState }: BookmarkButtonP
         staleTime: Infinity,
     })
 
-    console.log(data, postId);
-
     const queryKey: QueryKey = ["bookmark-info", postId]
     const queryClient = useQueryClient()
 
