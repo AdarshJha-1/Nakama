@@ -4,7 +4,7 @@ const requiredString = z.string().trim().min(1, "Required");
 
 export const createPostSchema = z.object({
     content: requiredString,
-    mediaIds: z.array(z.string()).max(5, "can't have >more than 5 attachments")
+    mediaIds: z.array(z.string()).max(4, "can't have >more than 4 attachments")
 })
 
 export const updateUserProfileSchema = z.object({

@@ -1,5 +1,5 @@
 import { sql } from "drizzle-orm";
-import { follow, post, user } from "./schema";
+import { bookmarks, comments, follow, likes, post, user } from "./schema";
 
 export function userFromDB(loggedInUserId: string) {
     return {

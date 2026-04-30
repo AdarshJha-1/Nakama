@@ -19,7 +19,7 @@ export default async function MainLayout({
         <SessionProvider value={session}>
             <div className="flex min-h-screen flex-col">
                 <Navbar className='sticky top-0 z-10 bg-card' />
-                <div className="w-full max-w-4xl mx-auto flex p-5 grow gap-5 ">
+                <div className="w-full max-w-4xl mx-auto flex py-2 sm:p-5 grow gap-5 ">
                     <div className="hidden sm:block h-fit sticky top-19">
                         <LeftSidebar className='hidden sm:flex ' />
                     </div>

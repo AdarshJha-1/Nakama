@@ -29,7 +29,7 @@ export default function PostMore({ id }: { id: string }) {
     return (
         <DropdownMenu open={open} onOpenChange={setOpen}>
             <DropdownMenuTrigger asChild>
-                <MoreVertical />
+                <MoreVertical className="size-5" />
             </DropdownMenuTrigger>
             <DropdownMenuContent>
                 <DropdownMenuGroup>

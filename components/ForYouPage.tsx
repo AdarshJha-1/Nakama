@@ -46,7 +46,7 @@ export default function ForYouPage() {
     }
 
     return (
-        <InfiniteLoading className="flex flex-col gap-5" onBottomReached={() => {
+        <InfiniteLoading className="flex flex-col space-y-2 sm:space-y-3" onBottomReached={() => {
             hasNextPage && !isFetching && fetchNextPage()
         }}>
             {

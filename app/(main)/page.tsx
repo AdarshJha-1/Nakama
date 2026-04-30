@@ -16,7 +16,7 @@ export default async function Home() {
         <div className="hidden sm:block sm:mb-5">
           <Tiptap />
         </div>
-        <div className="rounded-full fixed right-10 bottom-20 sm:hidden flex justify-center items-center bg-blue-400 w-12 h-12  hover:bg-accent">
+        <div className="rounded-full z-50 fixed right-10 bottom-20 sm:hidden flex justify-center items-center bg-blue-400 w-12 h-12  hover:bg-accent">
           <Plus size={32} />
         </div>
         <div className="">

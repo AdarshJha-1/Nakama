@@ -59,7 +59,10 @@ export default function BookmarkButton({ postId, initialState }: BookmarkButtonP
     })
 
     return (
-        <button onClick={() => mutate()} className="flex items-center gap-2 cursor-pointer ">
+        <button onClick={(e) => {
+            e.stopPropagation()
+            mutate()
+        }} className="flex items-center gap-2 cursor-pointer ">
             <Bookmark className={cn("size-5 transition-all duration-200 hover:text-blue-400", data.isBookmarkedByUser && "fill-blue-400 text-blue-400")} />
             <span className='text-sm font-medium'>
                 {data.bookmarks}

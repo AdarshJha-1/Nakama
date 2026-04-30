@@ -1,8 +1,8 @@
 import { db } from "@/db/drizzle";
 import { userFromDB } from "@/db/helper";
-import { bookmarks, comments, likes, post, user } from "@/db/schema";
+import { bookmarks, comments, likes, media, post, user } from "@/db/schema";
 import { getServerSession } from "@/lib/getServerSession";
-import { PostDTO, PostPage } from "@/lib/types";
+import { Media, PostDTO, PostPage } from "@/lib/types";
 import { and, desc, eq, lt, or, sql, } from "drizzle-orm";
 import { NextRequest } from "next/server";
 
@@ -26,6 +26,20 @@ export async function GET(req: NextRequest) {
             createdAt: post.createdAt,
 
             author: userFromDB(session.user.id),
+
+            media: sql<Media[]>`(
+                SELECT json_agg(
+                    json_build_object(
+                        'id', ${media.id},
+                        'url', ${media.url},
+                        'type', ${media.type}
+                    )
+                )
+                FROM ${media}
+                WHERE ${media.postId} = ${post.id}
+            )
+            `.as("media"),
+
             isLiked: sql<boolean>`
                 EXISTS (
                     SELECT 1 FROM ${likes}
@@ -33,7 +47,6 @@ export async function GET(req: NextRequest) {
                     AND ${likes.userId} = ${session.user.id}
                 )
                 `,
-
             isBookmarked: sql<boolean>`
                 EXISTS (
                     SELECT 1 FROM ${bookmarks}
@@ -103,6 +116,7 @@ export async function GET(req: NextRequest) {
             postCount: Number(p.author.postCount),
 
         },
+        media: p.media ?? [],
         isLiked: p.isLiked,
         isBookmarked: p.isBookmarked,
         likeCount: Number(p.likeCount) ?? 0,

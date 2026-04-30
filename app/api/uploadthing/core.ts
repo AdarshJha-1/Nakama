@@ -37,7 +37,7 @@ export const fileRouter = {
             return { image: newAvtarUrl }
         }),
     attachment: f({
-        image: { maxFileSize: "4MB", maxFileCount: 4 },
+        image: { maxFileSize: "8MB", maxFileCount: 4 },
         video: { maxFileSize: "64MB", maxFileCount: 4 },
 
     })
