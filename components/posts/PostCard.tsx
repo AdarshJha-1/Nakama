@@ -61,7 +61,7 @@ export default function PostCard({ post }: { post: PostDTO }) {
             </div>
 
             {post.content && (
-                <p className="text-sm leading-relaxed whitespace-pre-wrap">
+                <p className="text-[18px] leading-relaxed whitespace-pre-wrap">
                     {post.content}
                 </p>
             )}
@@ -163,6 +163,7 @@ function MediaItem({
         </div>
     );
 }
+
 function MediaModal({
     media,
     onClose,
