@@ -106,11 +106,6 @@ export default async function Page({ params }: PageProps) {
             <div className="w-full min-w-0 space-y-5">
                 <PostCard post={post} />
             </div>
-            {/* <div className="sticky top-[5.25rem] hidden h-fit w-80 flex-none lg:block">
-                <Suspense fallback={<Loader2 className="mx-auto animate-spin" />}>
-                    <UserInfoSidebar user={post.user} />
-                </Suspense>
-            </div> */}
         </main>
     );
 }

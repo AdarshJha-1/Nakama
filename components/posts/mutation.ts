@@ -38,8 +38,8 @@ export function useDeletePostMutation() {
                 }
             })
             toast.success("Post deleted")
-            if (pathname === `/post/${res.id}`) {
-                router.push("/")
+            if (pathname === `/posts/${res.id}`) {
+                router.push(`/`)
             }
         },
         onError(error) {
