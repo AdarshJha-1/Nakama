@@ -1,5 +1,5 @@
 import { sql } from "drizzle-orm";
-import { bookmarks, comments, follow, likes, post, user } from "./schema";
+import { follow, post, user } from "./schema";
 
 export function userFromDB(loggedInUserId: string) {
     return {
@@ -20,7 +20,7 @@ export function userFromDB(loggedInUserId: string) {
                 FROM ${follow}
                 WHERE ${follow.followingId} = ${user.id}
             )`,
-        postCount: sql<number>`(
+        postsCount: sql<number>`(
                 SELECT COUNT(*)::int
                 FROM ${post}
                 WHERE ${post.userId} = ${user.id}

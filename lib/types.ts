@@ -7,7 +7,7 @@ export type UserDTO = {
 
     isFollowed: boolean;
     followerCount: number;
-    postCount: number;
+    postsCount: number;
 };
 
 export type PostDTO = {
