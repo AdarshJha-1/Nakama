@@ -10,7 +10,7 @@ export default function CommentButton({ count }: CommentButtonProps) {
         <button
             onClick={(e) => e.stopPropagation()}
             className={cn(
-                "group flex items-center gap-1 text-sm transition-colors duration-200",
+                "group flex items-center gap-1 text-sm transition-colors duration-200 cursor-pointer",
                 "text-muted-foreground hover:text-sky-500"
             )}
         >

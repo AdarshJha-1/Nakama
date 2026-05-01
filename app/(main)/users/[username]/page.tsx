@@ -90,7 +90,7 @@ export default async function Page({ params }: PageProps) {
                         <span> Member since {joinedDate}</span>
                     </div>
                     <div className="flex gap-2 font-light py-2 text-sm">
-                        <span>Posts: {profileUser.postCount}</span>
+                        <span>Posts: {profileUser.postsCount}</span>
                         <ShowFollowerCount userId={profileUser.id} initialState={{ followers: profileUser.followerCount, isFollowedByUser: profileUser.isFollowed }} />
                     </div>
                 </div>

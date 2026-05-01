@@ -55,8 +55,6 @@ export async function POST(
         const { userId } = await params
         const decUserId = decodeURIComponent(userId)
 
-        console.log("Here::::", decUserId);
-
         const session = await getServerSession();
         if (!session) {
             return Response.json({

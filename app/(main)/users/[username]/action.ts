@@ -3,10 +3,11 @@
 import { db } from "@/db/drizzle";
 import { follow, post, user } from "@/db/schema";
 import { getServerSession } from "@/lib/getServerSession";
+import { UserDTO } from "@/lib/types";
 import { updateUserProfileSchema, UpdateUserProfileType } from "@/lib/validation";
 import { eq, sql } from "drizzle-orm";
 
-export async function updateUserProfile(values: UpdateUserProfileType) {
+export async function updateUserProfile(values: UpdateUserProfileType): Promise<UserDTO> {
     const validatedValues = updateUserProfileSchema.parse(values)
 
     const session = await getServerSession()
@@ -26,7 +27,7 @@ export async function updateUserProfile(values: UpdateUserProfileType) {
             username: user.username,
             image: user.image,
             createdAt: user.createdAt,
-            isFollowing: sql<boolean>`
+            isFollowed: sql<boolean>`
                 EXISTS (
                 SELECT 1 
                 FROM ${follow}

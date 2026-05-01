@@ -21,9 +21,7 @@ const getPost = cache(async (postId: string, loggedInUserId: string): Promise<Po
             id: post.id,
             content: post.content,
             createdAt: post.createdAt,
-
             author: userFromDB(loggedInUserId),
-
             media: sql<Media[]>`(
                 SELECT json_agg(
                     json_build_object(
@@ -36,7 +34,6 @@ const getPost = cache(async (postId: string, loggedInUserId: string): Promise<Po
                 WHERE ${media.postId} = ${post.id}
             )
             `.as("media"),
-
             isLiked: sql<boolean>`
                 EXISTS (
                     SELECT 1 FROM ${likes}

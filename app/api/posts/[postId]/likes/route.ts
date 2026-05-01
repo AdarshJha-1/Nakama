@@ -15,7 +15,6 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ post
         }, { status: 401 })
     }
 
-    console.log("for likes details");
     const { postId } = await params;
     const decPostId = decodeURIComponent(postId)
     const dbRes = await db.execute(sql`
@@ -40,8 +39,6 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ post
         likes: Number(row?.likes ?? 0),
         isLikedByUser: row?.isLiked === true,
     };
-
-    console.log(data);
 
     return Response.json(data, { status: 200 })
 }

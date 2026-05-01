@@ -6,7 +6,6 @@ import SessionProvider from './SessionProvider';
 import Navbar from '@/components/Navbar';
 import LeftSidebar from '@/components/LeftSidebar';
 
-
 export default async function MainLayout({
     children,
 }: Readonly<{

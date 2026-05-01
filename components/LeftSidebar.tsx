@@ -63,7 +63,6 @@ function SidebarButton({
                 <span className="size-5 flex items-center justify-center">
                     {buttonIcon}
                 </span>
-
                 <span className="tracking-tight">
                     {buttonName}
                 </span>
