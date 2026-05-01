@@ -61,6 +61,7 @@ export default function BookmarkButton({ postId, initialState }: BookmarkButtonP
     return (
         <button
             onClick={(e) => {
+                e.preventDefault()
                 e.stopPropagation();
                 mutate();
             }}

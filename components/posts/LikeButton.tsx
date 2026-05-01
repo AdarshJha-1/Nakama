@@ -1,6 +1,6 @@
 import { LikeInfo } from '@/lib/types';
 import { QueryKey, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { Heart, HeartIcon, HeartPlus } from 'lucide-react';
+import { Heart } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface PostLikesProps {
@@ -52,7 +52,6 @@ export default function LikeButton({ postId, initialState }: PostLikesProps) {
                 likes: (prevState?.likes || 0) + (prevState?.isLikedByUser ? -1 : +1),
                 isLikedByUser: !prevState.isLikedByUser,
             }))
-
             return { prevState }
         },
         onError(error, variables, context) {
@@ -61,15 +60,15 @@ export default function LikeButton({ postId, initialState }: PostLikesProps) {
         },
     })
 
-
     return (
         <button
             onClick={(e) => {
+                e.preventDefault()
                 e.stopPropagation();
                 mutate();
             }}
             className={cn(
-                "group flex items-center gap-1 text-sm transition-colors duration-200",
+                "group flex items-center gap-1 text-sm transition-colors duration-200 cursor-pointer",
                 data.isLikedByUser
                     ? "text-pink-500"
                     : "text-muted-foreground"

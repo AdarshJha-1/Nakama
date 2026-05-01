@@ -28,54 +28,70 @@ export default function PostMore({ id }: { id: string }) {
 
     return (
         <DropdownMenu open={open} onOpenChange={setOpen}>
-            <DropdownMenuTrigger asChild>
-                <MoreVertical className="size-5" />
-            </DropdownMenuTrigger>
-            <DropdownMenuContent>
-                <DropdownMenuGroup>
-                    <DropdownMenuItem>
-                        <PencilIcon />
-                        Edit
-                    </DropdownMenuItem>
-                    <DropdownMenuItem>
-                        <ShareIcon />
-                        Share
-                    </DropdownMenuItem>
-                </DropdownMenuGroup>
-                <DropdownMenuSeparator />
-                <DropdownMenuGroup>
-                    <AlertDialog>
-                        <AlertDialogTrigger asChild>
-                            <DropdownMenuItem
-                                variant="destructive"
-                                onSelect={(e) => e.preventDefault()}
-                            >
-                                <TrashIcon />
-                                Delete
-                            </DropdownMenuItem>
-                        </AlertDialogTrigger>
+            <div onClick={(e) => e.stopPropagation()}>
+                <DropdownMenuTrigger asChild>
+                    <button type="button">
+                        <MoreVertical className="size-5" />
+                    </button>
+                </DropdownMenuTrigger>
 
-                        <AlertDialogContent>
-                            <AlertDialogHeader>
-                                <AlertDialogTitle>
-                                    Are you absolutely sure?
-                                </AlertDialogTitle>
-                                <AlertDialogDescription>
-                                    This action cannot be undone. This will permanently delete your item.
-                                </AlertDialogDescription>
-                            </AlertDialogHeader>
+                <DropdownMenuContent onClick={(e) => e.stopPropagation()}>
+                    <DropdownMenuGroup>
+                        <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+                            <PencilIcon />
+                            Edit
+                        </DropdownMenuItem>
 
-                            <AlertDialogFooter>
-                                <AlertDialogCancel onClick={() => setOpen(false)}>Cancel</AlertDialogCancel>
-                                <AlertDialogAction onClick={() => {
-                                    handleDeletePost()
-                                    setOpen(false)
-                                }} variant={"destructive"}>Delete</AlertDialogAction>
-                            </AlertDialogFooter>
-                        </AlertDialogContent>
-                    </AlertDialog>
-                </DropdownMenuGroup>
-            </DropdownMenuContent>
+                        <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+                            <ShareIcon />
+                            Share
+                        </DropdownMenuItem>
+                    </DropdownMenuGroup>
+
+                    <DropdownMenuSeparator />
+
+                    <DropdownMenuGroup>
+                        <AlertDialog>
+                            <AlertDialogTrigger asChild>
+                                <DropdownMenuItem
+                                    variant="destructive"
+                                    onSelect={(e) => e.preventDefault()}
+                                >
+                                    <TrashIcon />
+                                    Delete
+                                </DropdownMenuItem>
+                            </AlertDialogTrigger>
+
+                            <AlertDialogContent onClick={(e) => e.stopPropagation()}>
+                                <AlertDialogHeader>
+                                    <AlertDialogTitle>
+                                        Are you absolutely sure?
+                                    </AlertDialogTitle>
+                                    <AlertDialogDescription>
+                                        This action cannot be undone.
+                                    </AlertDialogDescription>
+                                </AlertDialogHeader>
+
+                                <AlertDialogFooter>
+                                    <AlertDialogCancel onClick={() => setOpen(false)}>
+                                        Cancel
+                                    </AlertDialogCancel>
+
+                                    <AlertDialogAction
+                                        onClick={() => {
+                                            handleDeletePost();
+                                            setOpen(false);
+                                        }}
+                                        variant="destructive"
+                                    >
+                                        Delete
+                                    </AlertDialogAction>
+                                </AlertDialogFooter>
+                            </AlertDialogContent>
+                        </AlertDialog>
+                    </DropdownMenuGroup>
+                </DropdownMenuContent>
+            </div>
         </DropdownMenu>
     )
 }

@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { MessageCircleIcon, X } from "lucide-react";
+import { X } from "lucide-react";
 import Link from "next/link";
 import PostMore from "./PostMore";
 import { Media, PostDTO } from "@/lib/types";
@@ -41,7 +41,6 @@ export default function PostCard({ post }: { post: PostDTO }) {
                             className="rounded-full object-cover"
                         />
                     </Link>
-
                     <div className="flex flex-col">
                         <Link
                             href={`/users/${post.author.username}`}
@@ -55,7 +54,6 @@ export default function PostCard({ post }: { post: PostDTO }) {
                         </span>
                     </div>
                 </div>
-
                 {post.author.id === session?.userId && (
                     <PostMore id={post.id} />
                 )}
@@ -185,7 +183,6 @@ function MediaModal({
             >
                 <X className="size-5 text-xl font-bold" />
             </button>
-
             <div
                 onClick={(e) => e.stopPropagation()}
                 className="max-w-[90vw] max-h-[90vh]"

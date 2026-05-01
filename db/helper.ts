@@ -8,7 +8,6 @@ export function userFromDB(loggedInUserId: string) {
         username: user.username,
         image: user.image,
         createdAt: user.createdAt,
-
         isFollowed: sql<boolean>`
                 EXISTS (
                 SELECT 1 

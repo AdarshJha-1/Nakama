@@ -89,10 +89,10 @@ export const createPostAction = async (input: {
 
             isFollowed: p.author.isFollowed,
             followerCount: Number(p.author.followerCount),
-            postCount: Number(p.author.postCount),
+            postsCount: Number(p.author.postsCount),
 
         },
-        media: medias,
+        media: medias ?? [],
         isLiked: p.isLiked,
         isBookmarked: p.isBookmarked,
         likeCount: Number(p.likeCount) ?? 0,

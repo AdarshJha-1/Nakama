@@ -1,4 +1,3 @@
-import React from 'react'
 import Bookmarks from './Bookmarks'
 
 export default function page() {

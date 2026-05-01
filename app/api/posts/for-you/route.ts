@@ -24,9 +24,7 @@ export async function GET(req: NextRequest) {
             id: post.id,
             content: post.content,
             createdAt: post.createdAt,
-
             author: userFromDB(session.user.id),
-
             media: sql<Media[]>`(
                 SELECT json_agg(
                     json_build_object(
@@ -39,7 +37,6 @@ export async function GET(req: NextRequest) {
                 WHERE ${media.postId} = ${post.id}
             )
             `.as("media"),
-
             isLiked: sql<boolean>`
                 EXISTS (
                     SELECT 1 FROM ${likes}
@@ -86,7 +83,6 @@ export async function GET(req: NextRequest) {
         .limit(pageSize + 1)
         .orderBy(desc(post.createdAt), desc(post.id))
 
-
     const hasMore = rawPosts.length > pageSize;
     const postsToReturn = hasMore ? rawPosts.slice(0, pageSize) : rawPosts;
 
@@ -109,11 +105,9 @@ export async function GET(req: NextRequest) {
             username: p.author.username,
             image: p.author.image,
             createdAt: p.author.createdAt,
-
-
             isFollowed: p.author.isFollowed,
             followerCount: Number(p.author.followerCount),
-            postCount: Number(p.author.postCount),
+            postsCount: Number(p.author.postsCount),
 
         },
         media: p.media ?? [],
