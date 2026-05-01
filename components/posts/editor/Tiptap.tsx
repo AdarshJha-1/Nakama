@@ -7,11 +7,12 @@ import { useSession } from '@/app/(main)/SessionProvider'
 import { Button } from '@/components/ui/button'
 import "./styles.css"
 import Image from 'next/image'
-import { useRef, useState } from 'react'
+import { ClipboardEvent, useRef, useState } from 'react'
 import { useSubmitPostMutation } from './PostMutation'
 import useMediaUpload, { Attachment } from './useMediaUpload'
 import { ImageIcon, Loader2, X } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { useDropzone } from '@uploadthing/react'
 
 
 const Tiptap = () => {
@@ -23,6 +24,14 @@ const Tiptap = () => {
     } = useMediaUpload()
 
     const [isDisable, setIsDisable] = useState(true);
+
+
+    const { getRootProps, getInputProps, isDragActive } = useDropzone({
+        onDrop: startUpload
+    })
+
+    const { onClick, ...rootProps } = getRootProps()
+
     const editor = useEditor({
         extensions: [
             StarterKit.configure({
@@ -61,6 +70,14 @@ const Tiptap = () => {
 
     }
 
+    function copyPasteImage(e: ClipboardEvent<HTMLInputElement>) {
+        const files = Array.from(e.clipboardData.items).filter(item => item.kind === "file").map(item => item.getAsFile()) as File[];
+        if (files.length) {
+            e.preventDefault();
+            startUpload(files);
+        }
+    }
+
     const { user } = useSession();
 
     return (
@@ -73,11 +90,13 @@ const Tiptap = () => {
                     height={60}
                     alt="avatar"
                 />
-                <div className="w-full">
+                <div className="w-full" {...rootProps}>
                     <EditorContent
                         editor={editor}
-                        className="w-full max-h-80 overflow-auto px-5 py-3 bg-background rounded-2xl"
+                        className={cn("w-full max-h-80 overflow-auto px-5 py-3 bg-background rounded-2xl", isDragActive && "outline-dotted")}
+                        onPaste={copyPasteImage}
                     />
+                    <input {...getInputProps()} />
                 </div>
             </div>
             <div>
