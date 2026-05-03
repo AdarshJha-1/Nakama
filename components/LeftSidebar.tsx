@@ -7,11 +7,13 @@ export default function LeftSidebar({ className }: { className?: string }) {
     return (
         <header
             className={`
-                flex flex-col gap-1
-                w-fit md:w-56
+                flex flex-row sm:flex-col
+                justify-between
+                items-center sm:items-stretch
+                w-full sm:w-56
                 px-2 py-2
                 bg-card
-                rounded-4xl
+                rounded-none sm:rounded-4xl
                 ${className}
             `}
         >
@@ -41,12 +43,16 @@ function SidebarButton({
             asChild
             variant="ghost"
             className={`
-                w-full justify-start
+                sm:hover:bg-muted
+                flex-1 min-w-0
+                w-full sm:w-full
+                justify-center sm:justify-start
                 h-12
-                px-4
+                sm:py-3
+                px-2 sm:px-4
                 text-[18px] font-medium
                 rounded-full
-                gap-4
+                gap-0 sm:gap-4
                 hover:bg-muted
                 transition
                 ${className}
@@ -58,12 +64,14 @@ function SidebarButton({
                         ? buttonPath
                         : `/${buttonPath}`
                 }
-                className="flex items-center gap-4"
+                className="flex items-center justify-center sm:justify-start gap-0 sm:gap-4 w-full"
             >
                 <span className="size-5 flex items-center justify-center">
                     {buttonIcon}
                 </span>
-                <span className="tracking-tight">
+
+                {/* Hide text on mobile */}
+                <span className="hidden sm:block tracking-tight">
                     {buttonName}
                 </span>
             </Link>
