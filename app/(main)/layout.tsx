@@ -24,8 +24,8 @@ export default async function MainLayout({
                     </div>
                     {children}
                 </div>
-                <div className="block sm:hidden sticky bottom-0 w-full bg-card">
-                    <LeftSidebar className='flex flex-row h-fit gap-5 w-full  rounded-none ' />
+                <div className="sm:hidden fixed bottom-0 left-0 w-full bg-card border-t z-50">
+                    <LeftSidebar />
                 </div>
             </div>
         </SessionProvider>
