@@ -1,3 +1,4 @@
+
 "use client"
 
 import {
@@ -12,16 +13,16 @@ import {
     AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { MoreVertical, PencilIcon, ShareIcon, TrashIcon } from "lucide-react";
-import { useDeletePostMutation } from "./mutation";
+import { MoreVertical, PencilIcon, TrashIcon } from "lucide-react";
+import { useDeleteCommentMutation } from "./mutation";
 import { DropdownMenuGroup, DropdownMenuSeparator } from "@radix-ui/react-dropdown-menu";
 import { useState } from "react";
 
-export default function PostMore({ id }: { id: string }) {
+export default function CommentMoreButton({ id }: { id: string }) {
 
     const [open, setOpen] = useState(false)
 
-    const mutation = useDeletePostMutation();
+    const mutation = useDeleteCommentMutation();
     const handleDeletePost = () => {
         mutation.mutate(id)
     }
@@ -40,12 +41,6 @@ export default function PostMore({ id }: { id: string }) {
                     >
                         <PencilIcon />
                         Edit
-                    </DropdownMenuItem>
-
-                    <DropdownMenuItem onSelect={(e) => e.preventDefault()}
-                    >
-                        <ShareIcon />
-                        Share
                     </DropdownMenuItem>
                 </DropdownMenuGroup>
 

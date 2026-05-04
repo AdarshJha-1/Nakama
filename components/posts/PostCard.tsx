@@ -14,9 +14,12 @@ import { Separator } from "../ui/separator";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
 import CommentButton from "./CommentsButton";
+import Comments from "../comments/Comments";
 
 export default function PostCard({ post }: { post: PostDTO }) {
     const [activeMedia, setActiveMedia] = useState<Media | null>(null);
+
+    const [showComments, setShowComments] = useState(false);
 
     const { session } = useSession();
     const router = useRouter();
@@ -29,7 +32,7 @@ export default function PostCard({ post }: { post: PostDTO }) {
     const formattedDate = formatDate(new Date(post.createdAt).getTime());
 
     return (
-        <div onClick={() => router.push(`/posts/${post.id}`)} className="bg-card sm:rounded-2xl p-5 space-y-4 shadow-sm hover:shadow-md transition cursor-pointer">
+        <div className="bg-card sm:rounded-2xl p-5 space-y-4 shadow-sm hover:shadow-md transition">
             <div className="flex justify-between items-start">
                 <div className="flex gap-3">
                     <Link href={`/users/${post.author.username}`} onClick={(e) => e.stopPropagation()}>
@@ -60,9 +63,11 @@ export default function PostCard({ post }: { post: PostDTO }) {
             </div>
 
             {post.content && (
-                <p className="text-[18px] leading-relaxed whitespace-pre-wrap">
-                    {post.content}
-                </p>
+                <div className="cursor-pointer" onClick={() => router.push(`/posts/${post.id}`)}>
+                    <p className="text-[18px] leading-relaxed whitespace-pre-wrap">
+                        {post.content}
+                    </p>
+                </div>
             )}
 
             {post.media?.length > 0 && (
@@ -80,7 +85,7 @@ export default function PostCard({ post }: { post: PostDTO }) {
                             isLikedByUser: post.isLiked,
                         }}
                     />
-                    <CommentButton count={post.commentCount} />
+                    <CommentButton count={post.commentCount} setShowComments={() => setShowComments(!showComments)} />
                 </div>
 
                 <BookmarkButton
@@ -97,6 +102,9 @@ export default function PostCard({ post }: { post: PostDTO }) {
                     onClose={() => setActiveMedia(null)}
                 />
             )}
+            {
+                showComments && <Comments post={post} />
+            }
         </div>
     );
 }

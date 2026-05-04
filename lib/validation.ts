@@ -11,3 +11,8 @@ export const updateUserProfileSchema = z.object({
     name: requiredString,
 })
 export type UpdateUserProfileType = z.infer<typeof updateUserProfileSchema>
+
+
+export const createComment = z.object({
+    content: requiredString,
+})

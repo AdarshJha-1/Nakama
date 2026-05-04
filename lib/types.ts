@@ -25,6 +25,15 @@ export type PostDTO = {
     bookmarkCount: number;
 };
 
+export type CommentDTO = {
+    id: string;
+    content: string;
+    author: UserDTO;
+    isEdited: boolean;
+    createdAt: Date;
+    updatedAt: Date;
+}
+
 export type MEDIA = "IMAGE" | "VIDEO"
 
 
@@ -41,6 +50,11 @@ export interface FollowerInfo {
 
 export interface PostPage {
     posts: PostDTO[];
+    nextCursor: string | null;
+}
+
+export interface CommentsPage {
+    comments: CommentDTO[];
     nextCursor: string | null;
 }
 
