@@ -68,7 +68,7 @@ export default function LikeButton({ postId, initialState }: PostLikesProps) {
                 mutate();
             }}
             className={cn(
-                "group flex items-center gap-1 text-sm transition-colors duration-200 cursor-pointer",
+                "group flex items-center gap-1 transition-colors duration-200 cursor-pointer",
                 data.isLikedByUser
                     ? "text-pink-500"
                     : "text-muted-foreground"
@@ -78,7 +78,7 @@ export default function LikeButton({ postId, initialState }: PostLikesProps) {
                 <span className="absolute size-8 rounded-full scale-0 opacity-0 transition-all duration-200 group-hover:scale-100 group-hover:opacity-100 bg-pink-500/10" />
                 <Heart
                     className={cn(
-                        "relative z-10 size-4 transition-colors duration-200",
+                        "relative z-10 transition-colors duration-200",
                         data.isLikedByUser
                             ? "fill-pink-500 text-pink-500"
                             : "group-hover:text-pink-500"

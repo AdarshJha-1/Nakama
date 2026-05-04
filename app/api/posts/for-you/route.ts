@@ -108,7 +108,6 @@ export async function GET(req: NextRequest) {
             isFollowed: p.author.isFollowed,
             followerCount: Number(p.author.followerCount),
             postsCount: Number(p.author.postsCount),
-
         },
         media: p.media ?? [],
         isLiked: p.isLiked,
