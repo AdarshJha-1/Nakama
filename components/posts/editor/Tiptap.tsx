@@ -81,10 +81,10 @@ const Tiptap = () => {
     const { user } = useSession();
 
     return (
-        <div className="flex flex-col gap-5 rounded-2xl bg-card p-5 shadow-sm">
+        <div className="flex flex-col gap-5 sm:rounded-2xl bg-card p-5 shadow-sm">
             <div className="flex gap-5 items-start">
                 <Image
-                    className="rounded-full aspect-square flex-none object-cover"
+                    className="rounded-full aspect-square flex-none object-cover hidden sm:block"
                     src={user.image as string}
                     width={60}
                     height={60}
