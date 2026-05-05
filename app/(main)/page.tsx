@@ -13,11 +13,8 @@ export default async function Home() {
   return (
     <main className="w-full flex relative ">
       <div className="w-full flex flex-col">
-        <div className="hidden sm:block sm:mb-5">
+        <div className="mb-2 sm:mb-5">
           <Tiptap />
-        </div>
-        <div className="rounded-full z-50 fixed right-10 bottom-20 sm:hidden flex justify-center items-center bg-blue-400 w-12 h-12  hover:bg-accent">
-          <Plus size={32} />
         </div>
         <div className="">
           <PostPage />
