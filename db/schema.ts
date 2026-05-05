@@ -220,5 +220,6 @@ export const schema = {
     likes,
     comments,
     bookmarks,
-    media
+    media,
+    follow
 } as const;
