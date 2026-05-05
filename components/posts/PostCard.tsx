@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { X } from "lucide-react";
+import { ImageDown, X } from "lucide-react";
 import Link from "next/link";
 import PostMore from "./PostMore";
 import { Media, PostDTO } from "@/lib/types";
@@ -12,13 +12,13 @@ import LikeButton from "./LikeButton";
 import BookmarkButton from "./BookmarkButton";
 import { Separator } from "../ui/separator";
 import { cn } from "@/lib/utils";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import CommentButton from "./CommentsButton";
 import Comments from "../comments/Comments";
+import { Button } from "../ui/button";
 
 export default function PostCard({ post }: { post: PostDTO }) {
-    const [activeMedia, setActiveMedia] = useState<Media | null>(null);
-
+    const [activeIndex, setActiveIndex] = useState<number | null>(null);
     const [showComments, setShowComments] = useState(false);
 
     const { session } = useSession();
@@ -71,7 +71,7 @@ export default function PostCard({ post }: { post: PostDTO }) {
             )}
 
             {post.media?.length > 0 && (
-                <MediaGrid media={post.media} setActiveMedia={setActiveMedia} />
+                <MediaGrid media={post.media} setActiveIndex={setActiveIndex} />
             )}
 
             <Separator className="bg-muted/50" />
@@ -85,7 +85,10 @@ export default function PostCard({ post }: { post: PostDTO }) {
                             isLikedByUser: post.isLiked,
                         }}
                     />
-                    <CommentButton count={post.commentCount} setShowComments={() => setShowComments(!showComments)} />
+                    <CommentButton
+                        count={post.commentCount}
+                        setShowComments={() => setShowComments(!showComments)}
+                    />
                 </div>
 
                 <BookmarkButton
@@ -96,21 +99,28 @@ export default function PostCard({ post }: { post: PostDTO }) {
                     }}
                 />
             </div>
-            {activeMedia && (
+
+            {activeIndex !== null && (
                 <MediaModal
-                    media={activeMedia}
-                    onClose={() => setActiveMedia(null)}
+                    media={post.media}
+                    index={activeIndex}
+                    setIndex={setActiveIndex}
+                    onClose={() => setActiveIndex(null)}
                 />
             )}
-            {
-                showComments && <Comments post={post} />
-            }
+
+            {showComments && <Comments post={post} />}
         </div>
     );
 }
 
-
-function MediaGrid({ media, setActiveMedia }: { media: Media[], setActiveMedia: (m: Media) => void }) {
+function MediaGrid({
+    media,
+    setActiveIndex,
+}: {
+    media: Media[];
+    setActiveIndex: (index: number) => void;
+}) {
     const count = media.length;
 
     return (
@@ -120,11 +130,17 @@ function MediaGrid({ media, setActiveMedia }: { media: Media[], setActiveMedia: 
                 count === 1 && "grid-cols-1",
                 count === 2 && "grid-cols-2",
                 count === 3 && "grid-cols-2 grid-rows-2 h-105",
-                count >= 4 && "grid-cols-2 grid-rows-2 h"
+                count >= 4 && "grid-cols-2 grid-rows-2"
             )}
         >
             {media.slice(0, 4).map((m, i) => (
-                <MediaItem setActiveMedia={setActiveMedia} key={m.id} media={m} index={i} total={count} />
+                <MediaItem
+                    key={m.id}
+                    media={m}
+                    index={i}
+                    total={count}
+                    setActiveIndex={setActiveIndex}
+                />
             ))}
         </div>
     );
@@ -134,23 +150,21 @@ function MediaItem({
     media,
     index,
     total,
-    setActiveMedia,
-
+    setActiveIndex,
 }: {
     media: Media;
     index: number;
     total: number;
-    setActiveMedia: (m: Media) => void
+    setActiveIndex: (index: number) => void;
 }) {
     const isThree = total === 3;
 
     return (
         <div
             onClick={(e) => {
-                e.stopPropagation()
-                setActiveMedia(media)
-            }
-            }
+                e.stopPropagation();
+                setActiveIndex(index);
+            }}
             className={cn(
                 "relative overflow-hidden rounded-xl bg-black/5",
                 isThree && index === 0 && "row-span-2"
@@ -169,40 +183,123 @@ function MediaItem({
 
 function MediaModal({
     media,
+    index,
+    setIndex,
     onClose,
 }: {
-    media: Media;
+    media: Media[];
+    index: number;
+    setIndex: (i: number | null) => void;
     onClose: () => void;
 }) {
+    const prev = () => {
+        setIndex((index - 1 + media.length) % media.length);
+    };
+
+    const next = () => {
+        setIndex((index + 1) % media.length);
+    };
+
+    useEffect(() => {
+        const handleKey = (e: KeyboardEvent) => {
+            if (e.key === "ArrowLeft") prev();
+            if (e.key === "ArrowRight") next();
+            if (e.key === "Escape") onClose();
+        };
+
+        window.addEventListener("keydown", handleKey);
+        return () => window.removeEventListener("keydown", handleKey);
+    }, [index, media.length, onClose]);
+
+    const handleDownload = async () => {
+        try {
+            const url = media[index].url;
+
+            const fileName =
+                url.split("/").pop()?.split("?")[0] || `image-${index}.jpg`;
+
+            const res = await fetch(url);
+            const blob = await res.blob();
+
+            const blobUrl = window.URL.createObjectURL(blob);
+
+            const a = document.createElement("a");
+            a.href = blobUrl;
+            a.download = fileName;
+            document.body.appendChild(a);
+            a.click();
+
+            a.remove();
+            window.URL.revokeObjectURL(blobUrl);
+        } catch (err) {
+            console.error("Download failed", err);
+        }
+    };
+
     return (
         <div
             onClick={(e) => {
                 e.stopPropagation();
-                onClose()
+                onClose();
             }}
             className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center"
         >
             <button
                 onClick={(e) => {
                     e.stopPropagation();
-                    onClose()
+                    onClose();
                 }}
-                className="absolute top-5 right-5 text-black text-2xl bg-accent-foreground rounded-full p-2 hover:bg-accent-foreground/80 transition-colors duration-200"
+                className="absolute top-5 right-5 bg-white hover:bg-accent-foreground rounded-full p-2"
             >
-                <X className="size-5 text-xl font-bold" />
+                <X className="size-5 text-black" />
             </button>
+
+            {media.length > 1 && (
+                <button
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        prev();
+                    }}
+                    className="absolute left-5 text-white text-4xl"
+                >
+                    ‹
+                </button>
+            )}
+
             <div
                 onClick={(e) => e.stopPropagation()}
                 className="max-w-[90vw] max-h-[90vh]"
             >
                 <Image
-                    src={media.url}
+                    src={media[index].url}
                     alt="zoomed media"
                     width={1200}
                     height={1200}
-                    className="w-full h-full object-contain rounded-xl"
+                    className="max-w-full max-h-[90vh] w-auto h-auto object-contain rounded-xl"
                 />
             </div>
+
+            {media.length > 1 && (
+                <button
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        next();
+                    }}
+                    className="absolute right-5 text-white text-4xl"
+                >
+                    ›
+                </button>
+            )}
+            <Button
+                onClick={(e) => {
+                    e.stopPropagation();
+                    handleDownload();
+                }}
+                className="absolute top-5 left-5 bg-white hover:bg-accent-foreground rounded-full px-3 py-1 text-sm"
+            >
+                <ImageDown />
+                Download
+            </Button>
         </div>
     );
 }
