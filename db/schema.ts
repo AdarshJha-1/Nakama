@@ -161,6 +161,26 @@ export const media = pgTable("post_media",
     }
 )
 
+export const NotificationTypeEnum = pgEnum("notification_type",
+    [
+        "LIKE",
+        "COMMENT",
+        "FOLLOW"
+    ]
+)
+
+export const notification = pgTable("notification",
+    {
+        id: text("id").primaryKey(),
+        recipientId: text("recipient_id").notNull().references(() => user.id, { onDelete: "cascade" }),
+        issuerId: text("issuer_id").notNull().references(() => user.id, { onDelete: "cascade" }),
+        postId: text("post_id").references(() => post.id, { onDelete: "cascade" }),
+        type: NotificationTypeEnum("type").notNull(),
+        read: boolean("read"),
+        createdAt: timestamp("created_at").defaultNow().notNull(),
+    }
+)
+
 export const follow = pgTable("follow",
     {
         followerId: text("follower_id").notNull().references(() => user.id, { onDelete: "cascade" }),
@@ -210,6 +230,24 @@ export const followRelations = relations(follow, ({ one }) => ({
     }),
 }));
 
+export const notificationRelations = relations(notification, ({ one }) => ({
+    recipient: one(user, {
+        fields: [notification.recipientId],
+        references: [user.id],
+        relationName: "notificationRecipient",
+    }),
+
+    issuer: one(user, {
+        fields: [notification.issuerId],
+        references: [user.id],
+        relationName: "notificationIssuer",
+    }),
+
+    post: one(post, {
+        fields: [notification.postId],
+        references: [post.id],
+    }),
+}));
 
 export const schema = {
     user,
@@ -221,5 +259,6 @@ export const schema = {
     comments,
     bookmarks,
     media,
-    follow
+    follow,
+    notification
 } as const;
