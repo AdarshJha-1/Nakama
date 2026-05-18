@@ -34,6 +34,34 @@ export type CommentDTO = {
     updatedAt: Date;
 }
 
+export type NotificationDTO = {
+    id: string;
+    recipientId: string;
+    issuerId: string;
+    postId: string | null;
+    type: string;
+    read: boolean | null;
+    createdAt: Date;
+    withData: {
+        issuer: {
+            username: string;
+            name: string;
+            image: string | null;
+        };
+
+        post?: {
+            content: string;
+        } | null;
+    };
+}
+
+
+export interface NotificationPage {
+    notifications: NotificationDTO[];
+    nextCursor: string | null;
+}
+
+
 export type MEDIA = "IMAGE" | "VIDEO"
 
 
