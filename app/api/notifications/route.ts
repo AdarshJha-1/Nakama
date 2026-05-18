@@ -14,6 +14,9 @@ export async function GET(req: NextRequest) {
         }, { status: 401 })
     }
 
+    console.log("called");
+
+
     const pageSize = 10;
     const rawCursor = req.nextUrl.searchParams.get("cursor");
     const parsedCursor = rawCursor ? JSON.parse(decodeURIComponent(rawCursor)) : null;
