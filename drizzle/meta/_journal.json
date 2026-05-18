@@ -15,6 +15,13 @@
       "when": 1769606598288,
       "tag": "0001_brave_synch",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1779120555008,
+      "tag": "0002_faulty_wendigo",
+      "breakpoints": true
     }
   ]
 }
