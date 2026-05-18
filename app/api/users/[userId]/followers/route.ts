@@ -1,8 +1,9 @@
 import { db } from "@/db/drizzle";
-import { follow } from "@/db/schema";
+import { follow, notification } from "@/db/schema";
 import { getServerSession } from "@/lib/getServerSession";
 import { FollowerInfo } from "@/lib/types";
 import { and, eq, sql } from "drizzle-orm";
+import { nanoid } from "nanoid";
 
 export async function GET(
     req: Request,
@@ -70,12 +71,25 @@ export async function POST(
             }, { status: 400 })
         }
 
-        await db.insert(follow).values(
-            {
-                followerId: session.user.id,
-                followingId: decUserId
-            }
-        ).onConflictDoNothing();
+
+        await db.transaction(async (tx) => {
+
+            await db.insert(follow).values(
+                {
+                    followerId: session.user.id,
+                    followingId: decUserId
+                }
+            ).onConflictDoNothing()
+
+            await db.insert(notification).values({
+                id: nanoid(),
+                issuerId: session.user.id,
+                recipientId: decUserId,
+                type: "FOLLOW",
+            })
+
+        })
+
 
         return Response.json({
             success: true,
@@ -108,7 +122,16 @@ export async function DELETE(
         const decUserId = decodeURIComponent(userId)
 
 
-        await db.delete(follow).where(and(eq(follow.followerId, session.user.id), eq(follow.followingId, decUserId)))
+        await db.transaction(async (tx) => {
+            await db.delete(follow).where(and(eq(follow.followerId, session.user.id), eq(follow.followingId, decUserId)))
+
+            await db.delete(notification).where(and(
+                eq(notification.issuerId, session.user.id),
+                eq(notification.recipientId, decUserId),
+                eq(notification.type, "FOLLOW")
+            ))
+        })
+
 
         return Response.json({
             success: true,
