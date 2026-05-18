@@ -16,7 +16,12 @@ export default function Notification({
     notification,
 }: NotificationProps) {
 
-    const notificationTypeMap = {
+
+    const notificationTypeMap: Record<string, {
+        message: string,
+        icon: React.JSX.Element,
+        href: string,
+    }> = {
         FOLLOW: {
             message: `${notification.withData.issuer.name} followed you`,
             icon: <User2 className="size-5 text-primary" />,
