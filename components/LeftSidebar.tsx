@@ -1,9 +1,33 @@
 import Link from "next/link";
 import { Button } from "./ui/button";
-import { Bell, Book, Home, Search } from "lucide-react";
+import { Book, Home, Search } from "lucide-react";
 import { ReactNode } from "react";
+import NotificationButton from "./NotificationButton";
+import { db } from "@/db/drizzle";
+import { notification } from "@/db/schema";
+import { and, eq } from "drizzle-orm";
+import { getServerSession } from "@/lib/getServerSession";
+import { NotificationCountInfo } from "@/lib/types";
+import { redirect } from "next/navigation";
 
-export default function LeftSidebar({ className }: { className?: string }) {
+export default async function LeftSidebar({ className }: { className?: string }) {
+
+    const session = await getServerSession();
+    if (!session) {
+        return redirect("/auth")
+    }
+
+    const unreadNotiCount = await db.$count(
+        notification,
+        and(
+            eq(notification.recipientId, session.user.id),
+            eq(notification.read, false)
+        )
+    )
+    const unreadNotificationsCount: NotificationCountInfo = {
+        unreadCount: unreadNotiCount
+    }
+
     return (
         <header
             className={`
@@ -19,7 +43,7 @@ export default function LeftSidebar({ className }: { className?: string }) {
         >
             <SidebarButton buttonName="Home" buttonIcon={<Home />} buttonPath="/" />
             <SidebarButton buttonName="Search" buttonIcon={<Search />} buttonPath="search" />
-            <SidebarButton buttonName="Notifications" buttonIcon={<Bell />} buttonPath="notifications" />
+            <NotificationButton initialData={unreadNotificationsCount} />
             <SidebarButton buttonName="Bookmarks" buttonIcon={<Book />} buttonPath="bookmarks" />
         </header>
     );
@@ -70,7 +94,6 @@ function SidebarButton({
                     {buttonIcon}
                 </span>
 
-                {/* Hide text on mobile */}
                 <span className="hidden sm:block tracking-tight">
                     {buttonName}
                 </span>

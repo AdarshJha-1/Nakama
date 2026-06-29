@@ -6,7 +6,7 @@ import Auth from "./Auth";
 
 export default function Navbar({ className }: { className?: string }) {
     return (
-        <div className={`w-full h-14 border-b px-5 ${className}`}>
+        <div className={`w-full h-14 z-50 border-b px-5 ${className}`}>
             <div className="max-w-6xl mx-auto h-full flex justify-between items-center">
                 <Link href={"/"} className="flex items-center justify-center">
                     <Image
