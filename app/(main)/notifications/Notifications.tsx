@@ -1,16 +1,17 @@
 "use client"
 
-import { useInfiniteQuery } from "@tanstack/react-query"
+import { useInfiniteQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import { Loader2 } from "lucide-react";
 import { NotificationDTO, NotificationPage } from "@/lib/types";
 import InfiniteLoading from "@/components/InfiniteLoading";
 import PostCardSkeleton from "@/components/posts/PostCardSkeleton";
 import Notification from "./Notification";
+import { useEffect } from "react";
 
 export default function Notifications() {
 
     const { data, fetchNextPage, hasNextPage, isFetching, status, isFetchingNextPage } = useInfiniteQuery({
-        queryKey: ["post-feed", "notification"],
+        queryKey: ["notification"],
         queryFn: async ({ pageParam }) => {
             const searchParam = new URLSearchParams()
             if (pageParam) searchParam.append("cursor", encodeURIComponent(pageParam))
@@ -24,6 +25,30 @@ export default function Notifications() {
         initialPageParam: null as string | null,
         getNextPageParam: (lastPage) => lastPage.nextCursor
     })
+
+    const queryClient = useQueryClient();
+
+    const { mutate } = useMutation({
+        mutationFn: async () => await fetch(`/api/notifications/mark-read`, {
+            method: "PATCH",
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            credentials: "include"
+        }),
+        onSuccess: () => {
+            queryClient.setQueryData(["unread-notifications-count"], {
+                unreadCount: 0
+            })
+        },
+        onError(error) {
+            console.error("Failed to mark notifications as read", error);
+        },
+    })
+    useEffect(() => {
+        mutate();
+    }, [mutate]);
+
 
     const notifications = data?.pages.flatMap(page => page.notifications) || []
 
@@ -46,7 +71,7 @@ export default function Notifications() {
     }
 
     return (
-        <InfiniteLoading className="flex flex-col gap-5" onBottomReached={() => {
+        <InfiniteLoading className="flex flex-col gap-2 sm:gap-5" onBottomReached={() => {
             hasNextPage && !isFetching && fetchNextPage()
         }}>
             {

@@ -6,7 +6,6 @@ import { Heart, MessageCircle, User2 } from "lucide-react";
 import { NotificationDTO } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
-// import UserAvatar from "@/components/UserAvatar";
 
 interface NotificationProps {
     notification: NotificationDTO;
@@ -52,7 +51,7 @@ export default function Notification({
         <Link href={href} className="block">
             <article
                 className={cn(
-                    "flex gap-3 rounded-2xl bg-card p-5 shadow-sm transition-colors hover:bg-card/70",
+                    "flex gap-3 sm:rounded-2xl bg-card p-5 shadow-sm transition-colors hover:bg-card/70",
                     !notification.read && "bg-primary/10"
                 )}
             >

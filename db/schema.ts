@@ -176,7 +176,7 @@ export const notification = pgTable("notification",
         issuerId: text("issuer_id").notNull().references(() => user.id, { onDelete: "cascade" }),
         postId: text("post_id").references(() => post.id, { onDelete: "cascade" }),
         type: NotificationTypeEnum("type").notNull(),
-        read: boolean("read"),
+        read: boolean("read").notNull().default(false),
         createdAt: timestamp("created_at").defaultNow().notNull(),
     }
 )
