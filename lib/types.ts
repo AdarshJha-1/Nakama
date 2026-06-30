@@ -99,3 +99,30 @@ export interface BookmarkInfo {
 export interface NotificationCountInfo {
     unreadCount: number;
 }
+
+export type SearchUser = {
+    id: string;
+    name: string;
+    username: string;
+    image: string | null;
+    createdAt: Date;
+}
+
+export interface SearchUsersPage {
+    users: SearchUser[],
+    nextCursor: string | null
+}
+
+
+export type SearchPost = {
+    id: string;
+    content: string;
+    createdAt: Date;
+
+    author: SearchUser;
+    media: Media;
+}
+export interface SearchPostsPage {
+    posts: SearchPost[],
+    nextCursor: string | null
+}
