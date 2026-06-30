@@ -70,9 +70,9 @@ export default async function Page({ params }: PageProps) {
     })
 
     return (
-        <main className="flex w-full min-w-0 gap-5">
+        <main className="flex w-155 min-w-0 gap-5">
             <div className="w-full min-w-0 space-y-5">
-                <div className="bg-card rounded-2xl p-5">
+                <div className="bg-card sm:rounded-2xl p-5">
                     {profileUser?.image && <Image className="rounded-full mx-auto" src={profileUser.image as string} width={150} height={150} alt="avatar" />}
                     <div className="flex justify-between">
                         <div className="flex flex-col">
@@ -94,7 +94,7 @@ export default async function Page({ params }: PageProps) {
                         <ShowFollowerCount userId={profileUser.id} initialState={{ followers: profileUser.followerCount, isFollowedByUser: profileUser.isFollowed }} />
                     </div>
                 </div>
-                <div className="rounded-2xl bg-card p-5 shadow-sm">
+                <div className="sm:rounded-2xl bg-card p-5 shadow-sm">
                     <h2 className="text-center text-2xl font-bold">
                         {profileUser.name}&apos;s posts
                     </h2>

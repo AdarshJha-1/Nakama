@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Button } from "./ui/button";
-import { Book, Home, Search } from "lucide-react";
+import { Book, Home, SearchIcon } from "lucide-react";
 import { ReactNode } from "react";
 import NotificationButton from "./NotificationButton";
 import { db } from "@/db/drizzle";
@@ -31,18 +31,27 @@ export default async function LeftSidebar({ className }: { className?: string })
     return (
         <header
             className={`
-                flex flex-row sm:flex-col
-                justify-between
-                items-center sm:items-stretch
-                w-full sm:w-56
-                px-2 py-2
-                bg-card
-                rounded-none sm:rounded-4xl
-                ${className}
-            `}
+            flex flex-row
+            sm:flex-col
+            items-center
+            sm:items-stretch
+            justify-between
+
+            w-full
+            sm:w-18
+            lg:w-56
+
+            px-2 py-2
+
+            bg-card
+            rounded-none
+            sm:rounded-4xl
+
+            ${className}
+        `}
         >
             <SidebarButton buttonName="Home" buttonIcon={<Home />} buttonPath="/" />
-            <SidebarButton buttonName="Search" buttonIcon={<Search />} buttonPath="search" />
+            <SidebarButton buttonName="Search" buttonIcon={<SearchIcon />} buttonPath="/search" />
             <NotificationButton initialData={unreadNotificationsCount} />
             <SidebarButton buttonName="Bookmarks" buttonIcon={<Book />} buttonPath="bookmarks" />
         </header>
@@ -70,13 +79,13 @@ function SidebarButton({
                 sm:hover:bg-muted
                 flex-1 min-w-0
                 w-full sm:w-full
-                justify-center sm:justify-start
+                justify-center lg:justify-start
                 h-12
                 sm:py-3
-                px-2 sm:px-4
+                px-2 lg:px-4
                 text-[18px] font-medium
                 rounded-full
-                gap-0 sm:gap-4
+                gap-0 lg:gap-4
                 hover:bg-muted
                 transition
                 ${className}
@@ -88,13 +97,13 @@ function SidebarButton({
                         ? buttonPath
                         : `/${buttonPath}`
                 }
-                className="flex items-center justify-center sm:justify-start gap-0 sm:gap-4 w-full"
+                className="flex w-full items-center justify-center lg:justify-start gap-0 lg:gap-4"
             >
                 <span className="size-5 flex items-center justify-center">
                     {buttonIcon}
                 </span>
 
-                <span className="hidden sm:block tracking-tight">
+                <span className="hidden lg:block tracking-tight">
                     {buttonName}
                 </span>
             </Link>

@@ -10,7 +10,7 @@ export default async function Home() {
   if (!user) redirect("/auth")
 
   return (
-    <main className="w-full flex relative ">
+    <main className="w-155 flex relative ">
       <div className="w-full flex flex-col">
         <div className="mb-2 sm:mb-5">
           <Tiptap />
